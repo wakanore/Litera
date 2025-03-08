@@ -41,10 +41,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Author\Author.cs" />
-    <Compile Include="Book\Book.cs" />
+    <Compile Include="Author\AuthorRepository.cs" />
+    <Compile Include="Author\IAuthorRepository.cs" />
+    <Compile Include="Book\BookRepository.cs" />
+    <Compile Include="Book\IBookRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Reader\Reader.cs" />
+    <Compile Include="Reader\IReaderRepository.cs" />
+    <Compile Include="Reader\ReaderRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Domain\Domain.csproj">
