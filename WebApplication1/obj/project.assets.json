@@ -122,15 +122,6 @@
         "runtime": {
           "bin/placeholder/Infrastructure.dll": {}
         }
-      },
-      "Litera/1.0.0": {
-        "type": "project",
-        "compile": {
-          "bin/placeholder/Litera.dll": {}
-        },
-        "runtime": {
-          "bin/placeholder/Litera.dll": {}
-        }
       }
     }
   },
@@ -478,11 +469,6 @@
       "type": "project",
       "path": "../Infrastructure/Infrastructure.csproj",
       "msbuildProject": "../Infrastructure/Infrastructure.csproj"
-    },
-    "Litera/1.0.0": {
-      "type": "project",
-      "path": "../Litera/Litera.csproj",
-      "msbuildProject": "../Litera/Litera.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -490,7 +476,6 @@
       "Application >= 1.0.0",
       "Domain >= 1.0.0",
       "Infrastructure >= 1.0.0",
-      "Litera >= 1.0.0",
       "Swashbuckle.AspNetCore >= 6.4.0"
     ]
   },
@@ -537,9 +522,6 @@
             },
             "C:\\Users\\Пользователь\\source\\repos\\Litera\\Infrastructure\\Infrastructure.csproj": {
               "projectPath": "C:\\Users\\Пользователь\\source\\repos\\Litera\\Infrastructure\\Infrastructure.csproj"
-            },
-            "C:\\Users\\Пользователь\\source\\repos\\Litera\\Litera\\Litera.csproj": {
-              "projectPath": "C:\\Users\\Пользователь\\source\\repos\\Litera\\Litera\\Litera.csproj"
             }
           }
         }

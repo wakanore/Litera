@@ -3,12 +3,12 @@
   "WorkspaceRootPath": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\source\\repos\\Litera\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{63D9CCAA-35D5-4744-9250-BCB9171A0F81}|WebApplication1\\WebApplication1.csproj|c:\\users\\\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\source\\repos\\litera\\webapplication1\\controllers\\weatherforecastcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{63D9CCAA-35D5-4744-9250-BCB9171A0F81}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\controllers\\weatherforecastcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{63D9CCAA-35D5-4744-9250-BCB9171A0F81}|WebApplication1\\WebApplication1.csproj|c:\\users\\\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\source\\repos\\litera\\webapplication1\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{63D9CCAA-35D5-4744-9250-BCB9171A0F81}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{63D9CCAA-35D5-4744-9250-BCB9171A0F81}|WebApplication1\\WebApplication1.csproj|c:\\users\\\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\source\\repos\\litera\\webapplication1\\controllers\\weatherforecastcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{63D9CCAA-35D5-4744-9250-BCB9171A0F81}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\controllers\\weatherforecastcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{27D9E398-B0DF-499E-9F17-36B38EF4BC0A}|Infrastructure\\Infrastructure.csproj|C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\source\\repos\\Litera\\infrastructure\\reader\\readerrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -51,7 +51,7 @@
       "RelativeMoniker": "D:0:0:{6CCD0DDE-27C6-4219-9916-1E768F2870A1}|Application\\Application.csproj|solutionrelative:application\\author\\authordto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{27D9E398-B0DF-499E-9F17-36B38EF4BC0A}|Infrastructure\\Infrastructure.csproj|c:\\users\\\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\source\\repos\\litera\\infrastructure\\reader\\ireaderrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{27D9E398-B0DF-499E-9F17-36B38EF4BC0A}|Infrastructure\\Infrastructure.csproj|C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\source\\repos\\Litera\\infrastructure\\reader\\ireaderrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{27D9E398-B0DF-499E-9F17-36B38EF4BC0A}|Infrastructure\\Infrastructure.csproj|solutionrelative:infrastructure\\reader\\ireaderrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
@@ -90,30 +90,38 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 2,
           "Children": [
             {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{269a02dc-6af8-11d3-bdc4-00c04f688e50}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+            },
+            {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\source\\repos\\Litera\\WebApplication1\\Program.cs",
               "RelativeDocumentMoniker": "WebApplication1\\Program.cs",
               "ToolTip": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\source\\repos\\Litera\\WebApplication1\\Program.cs",
               "RelativeToolTip": "WebApplication1\\Program.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "ViewState": "AQIAAAgAAAAAAAAAAAAUwBgAAAAiAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-03-14T13:11:36.634Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "WeatherForecastController.cs",
               "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\source\\repos\\Litera\\WebApplication1\\Controllers\\WeatherForecastController.cs",
               "RelativeDocumentMoniker": "WebApplication1\\Controllers\\WeatherForecastController.cs",
               "ToolTip": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\source\\repos\\Litera\\WebApplication1\\Controllers\\WeatherForecastController.cs",
               "RelativeToolTip": "WebApplication1\\Controllers\\WeatherForecastController.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAALIAAAAcAAAA",
+              "ViewState": "AQIAACsAAAAAAAAAAAAQwDAAAAAfAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-03-13T16:08:32.95Z",
               "EditorCaption": ""
@@ -128,8 +136,7 @@
               "RelativeToolTip": "Infrastructure\\Reader\\IReaderRepository.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAA0AAAAcAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-08T10:01:13.251Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-08T10:01:13.251Z"
             },
             {
               "$type": "Document",
@@ -141,8 +148,7 @@
               "RelativeToolTip": "Infrastructure\\Reader\\ReaderRepository.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAQAAAASAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-08T10:00:54.297Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-08T10:00:54.297Z"
             },
             {
               "$type": "Document",
@@ -166,8 +172,7 @@
               "RelativeToolTip": "Infrastructure\\Book\\BookRepository.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAABIAAABXAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-08T09:59:09.262Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-08T09:59:09.262Z"
             },
             {
               "$type": "Document",
@@ -179,8 +184,7 @@
               "RelativeToolTip": "Infrastructure\\Author\\AuthorRepository.cs",
               "ViewState": "AQIAAAMAAAAAAAAAAAAAABMAAABiAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-08T09:56:58.126Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-08T09:56:58.126Z"
             },
             {
               "$type": "Document",
@@ -216,8 +220,7 @@
               "RelativeToolTip": "Application\\Reader\\ReaderService.cs",
               "ViewState": "AQIAAD8AAAAAAAAAAAAowEoAAAAmAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-08T09:52:26.248Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-08T09:52:26.248Z"
             },
             {
               "$type": "Document",
@@ -253,8 +256,7 @@
               "RelativeToolTip": "Application\\Book\\BookService.cs",
               "ViewState": "AQIAADkAAAAAAAAAAAAowEcAAAAkAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-08T09:50:15.905Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-08T09:50:15.905Z"
             },
             {
               "$type": "Document",
@@ -278,8 +280,7 @@
               "RelativeToolTip": "Application\\Author\\AuthorService.cs",
               "ViewState": "AQIAABAAAAAAAAAAAAAQwBQAAAAdAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-08T09:47:56.834Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-08T09:47:56.834Z"
             },
             {
               "$type": "Document",
@@ -303,8 +304,7 @@
               "RelativeToolTip": "Application\\Author\\AuthorDto.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAA8AAAAFAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-08T09:46:50.6Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-08T09:46:50.6Z"
             },
             {
               "$type": "Document",
@@ -316,8 +316,7 @@
               "RelativeToolTip": "Domain\\Reader\\Reader.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAAEAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-07T16:07:14.368Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-07T16:07:14.368Z"
             },
             {
               "$type": "Document",
@@ -329,8 +328,7 @@
               "RelativeToolTip": "Domain\\Book\\Book.cs",
               "ViewState": "AQIAAAMAAAAAAAAAAAAAAA0AAAATAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-07T16:07:01.719Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-07T16:07:01.719Z"
             },
             {
               "$type": "Document",
@@ -342,16 +340,7 @@
               "RelativeToolTip": "Domain\\Author\\Author.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAAjAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-07T16:06:50.385Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{269a02dc-6af8-11d3-bdc4-00c04f688e50}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+              "WhenOpened": "2025-03-07T16:06:50.385Z"
             }
           ]
         }

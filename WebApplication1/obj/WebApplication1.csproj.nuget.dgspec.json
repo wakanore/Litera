@@ -60,21 +60,6 @@
         "net472": {}
       }
     },
-    "C:\\Users\\Пользователь\\source\\repos\\Litera\\Litera\\Litera.csproj": {
-      "restore": {
-        "projectUniqueName": "C:\\Users\\Пользователь\\source\\repos\\Litera\\Litera\\Litera.csproj",
-        "projectName": "Litera",
-        "projectPath": "C:\\Users\\Пользователь\\source\\repos\\Litera\\Litera\\Litera.csproj",
-        "frameworks": {
-          "net472": {
-            "projectReferences": {}
-          }
-        }
-      },
-      "frameworks": {
-        "net472": {}
-      }
-    },
     "C:\\Users\\Пользователь\\source\\repos\\Litera\\WebApplication1\\WebApplication1.csproj": {
       "version": "1.0.0",
       "restore": {
@@ -113,9 +98,6 @@
               },
               "C:\\Users\\Пользователь\\source\\repos\\Litera\\Infrastructure\\Infrastructure.csproj": {
                 "projectPath": "C:\\Users\\Пользователь\\source\\repos\\Litera\\Infrastructure\\Infrastructure.csproj"
-              },
-              "C:\\Users\\Пользователь\\source\\repos\\Litera\\Litera\\Litera.csproj": {
-                "projectPath": "C:\\Users\\Пользователь\\source\\repos\\Litera\\Litera\\Litera.csproj"
               }
             }
           }

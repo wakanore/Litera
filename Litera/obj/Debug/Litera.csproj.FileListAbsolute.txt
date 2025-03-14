@@ -1,2 +1,0 @@
-C:\Users\Пользователь\source\repos\Litera\Litera\obj\Debug\Litera.csproj.AssemblyReference.cache
-C:\Users\Пользователь\source\repos\Litera\Litera\obj\Debug\Litera.csproj.CoreCompileInputs.cache

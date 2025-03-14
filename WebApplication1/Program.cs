@@ -1,3 +1,6 @@
+using Application;
+using Infrastructure;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +9,20 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
+// Регистрация репозиториев
+builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
+builder.Services.AddScoped<IBookRepository, BookRepository>();
+builder.Services.AddScoped<IReaderRepository, ReaderRepository>();
+
+// Регистрация сервисов
+builder.Services.AddScoped<AuthorService>();
+builder.Services.AddScoped<BookService>();
+builder.Services.AddScoped<ReaderService>();
+
+// Добавление контроллеров
+builder.Services.AddControllers();
 
 var app = builder.Build();
 

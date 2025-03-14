@@ -3,37 +3,37 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApplication1.Controllers
 {
+    //[ApiController]
+    //[Route("[controller]")]
+    //public class WeatherForecastController : ControllerBase
+    //{
+    //    private static readonly string[] Summaries = new[]
+    //    {
+    //        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+    //    };
+
+    //    private readonly ILogger<WeatherForecastController> _logger;
+
+    //    public WeatherForecastController(ILogger<WeatherForecastController> logger)
+    //    {
+    //        _logger = logger;
+    //    }
+
+    //    [HttpGet(Name = "GetWeatherForecast")]
+    //    public IEnumerable<WeatherForecast> Get()
+    //    {
+    //        return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+    //        {
+    //            Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+    //            TemperatureC = Random.Shared.Next(-20, 55),
+    //            Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+    //        })
+    //        .ToArray();
+    //    }
+    //}
+
     [ApiController]
-    [Route("[controller]")]
-    public class WeatherForecastController : ControllerBase
-    {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
-        private readonly ILogger<WeatherForecastController> _logger;
-
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
-        {
-            _logger = logger;
-        }
-
-        [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get()
-        {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
-        }
-    }
-
-    [ApiController]
-    [Route("api/[author]")]
+    [Route("api/[[author]]")]
     public class AuthorController : ControllerBase
     {
         private readonly Application.AuthorService _authorService;
@@ -45,10 +45,10 @@ namespace WebApplication1.Controllers
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            var product = _authorService.GetAuthorById(id);
-            if (product == null)
+            var result = _authorService.GetAuthorById(id);
+            if (result == null)
                 return NotFound();
-            return Ok(product);
+            return Ok(result);
         }
 
         [HttpGet]
@@ -83,7 +83,7 @@ namespace WebApplication1.Controllers
     }
 
     [ApiController]
-    [Route("api/[book]")]
+    [Route("api/[[book]]")]
     public class BookController : ControllerBase
     {
         private readonly Application.BookService _bookService;
@@ -134,7 +134,7 @@ namespace WebApplication1.Controllers
     }
 
     [ApiController]
-    [Route("api/[reader]")]
+    [Route("api/[[reader]]")]
     public class ReaderController : ControllerBase
     {
         private readonly Application.ReaderService _readerService;
