@@ -1,0 +1,11 @@
+C:\Users\Пользователь\source\repos\Litera\Application\bin\Debug\Application.dll
+C:\Users\Пользователь\source\repos\Litera\Application\bin\Debug\Application.pdb
+C:\Users\Пользователь\source\repos\Litera\Application\bin\Debug\Domain.dll
+C:\Users\Пользователь\source\repos\Litera\Application\bin\Debug\Infrastructure.dll
+C:\Users\Пользователь\source\repos\Litera\Application\bin\Debug\Domain.pdb
+C:\Users\Пользователь\source\repos\Litera\Application\bin\Debug\Infrastructure.pdb
+C:\Users\Пользователь\source\repos\Litera\Application\obj\Debug\Application.csproj.AssemblyReference.cache
+C:\Users\Пользователь\source\repos\Litera\Application\obj\Debug\Application.csproj.CoreCompileInputs.cache
+C:\Users\Пользователь\source\repos\Litera\Application\obj\Debug\Applicat.44B5EDA2.Up2Date
+C:\Users\Пользователь\source\repos\Litera\Application\obj\Debug\Application.dll
+C:\Users\Пользователь\source\repos\Litera\Application\obj\Debug\Application.pdb
