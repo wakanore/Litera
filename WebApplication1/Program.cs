@@ -15,11 +15,13 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IReaderRepository, ReaderRepository>();
+builder.Services.AddScoped<IFavouriteRepository, FavouriteRepository>();
 
 // Регистрация сервисов
 builder.Services.AddScoped<AuthorService>();
 builder.Services.AddScoped<BookService>();
 builder.Services.AddScoped<ReaderService>();
+builder.Services.AddScoped<FavouriteService>();
 
 // Добавление контроллеров
 builder.Services.AddControllers();

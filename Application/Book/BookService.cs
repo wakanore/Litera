@@ -16,7 +16,6 @@ namespace Application
             _bookRepository = BookRepository;
         }
 
-
         public void AddBook(BookDto BookDto)
         {
             var Book = new Domain.Book

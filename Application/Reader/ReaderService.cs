@@ -26,6 +26,7 @@ namespace Application
             };
             _readerRepository.Add(Reader);
         }
+
         public void UpdateReader(ReaderDto readerDto)
         {
             if (readerDto == null)
@@ -80,8 +81,7 @@ namespace Application
                 Id = reader.Id,
                 Name = reader.Name,
                 Phone = reader.Phone
-            }).ToList();
+            });
         }
     }
-
 }

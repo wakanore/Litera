@@ -17,7 +17,6 @@ namespace Application
             _authorRepository = AuthorRepository;
         }
 
-
         public void AddAuthor(AuthorDto AuthorDto)
         {
             var Author = new Domain.Author

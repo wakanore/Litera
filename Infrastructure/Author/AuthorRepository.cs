@@ -18,7 +18,9 @@ namespace Infrastructure
             _authors.Add(new Domain.Author { Id = 4, Name = "Pushkin", Phone = "+79414827364" });
             _authors.Add(new Domain.Author { Id = 5, Name = "Gogol", Phone = "+79504897653" });
             _authors.Add(new Domain.Author { Id = 6, Name = "Turgenev", Phone = "+79614857391" });
+
         }
+
         public void Add(Domain.Author author)
         {
             if (_authors.Any(a => a.Id == author.Id))
@@ -49,7 +51,6 @@ namespace Infrastructure
             {
                 throw new InvalidOperationException("Author not found.");
             }
-
             _authors.Remove(authorToDelete);
         }
         public Domain.Author GetById(int id)
@@ -66,6 +67,5 @@ namespace Infrastructure
         {
             return _authors; // Возвращаем всех авторов
         }
-
     }
 }

@@ -45,6 +45,8 @@
     <Compile Include="Author\IAuthorRepository.cs" />
     <Compile Include="Book\BookRepository.cs" />
     <Compile Include="Book\IBookRepository.cs" />
+    <Compile Include="Favourite\FavouriteRepository.cs" />
+    <Compile Include="Favourite\IFavouriteRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reader\IReaderRepository.cs" />
     <Compile Include="Reader\ReaderRepository.cs" />

@@ -47,6 +47,9 @@
     <Compile Include="Book\BookDto.cs" />
     <Compile Include="Book\BookService.cs" />
     <Compile Include="Book\IBookService.cs" />
+    <Compile Include="Favourite\FavouriteDto.cs" />
+    <Compile Include="Favourite\FavouriteService.cs" />
+    <Compile Include="Favourite\IFavouriteService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reader\IReaderService.cs" />
     <Compile Include="Reader\ReaderDto.cs" />
