@@ -45,7 +45,7 @@ namespace Application
             {
                 AuthorId = favourite.AuthorId,
                 ReaderId = favourite.ReaderId
-            }).ToList();
+            });
         }
     }
 }

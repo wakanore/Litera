@@ -53,6 +53,7 @@ namespace Infrastructure
             }
             _authors.Remove(authorToDelete);
         }
+
         public Domain.Author GetById(int id)
         {
             var author = _authors.FirstOrDefault(a => a.Id == id);
@@ -63,6 +64,7 @@ namespace Infrastructure
 
             return author;
         }
+
         public IEnumerable<Domain.Author> GetAll()
         {
             return _authors; // Возвращаем всех авторов

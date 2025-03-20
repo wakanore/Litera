@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Application;
 using Infrastructure;
+using Domain;
 
 namespace Application
 {
@@ -17,9 +18,9 @@ namespace Application
             _authorRepository = AuthorRepository;
         }
 
-        public void AddAuthor(AuthorDto AuthorDto)
+        public void AddAuthor(AuthorDto authorDto)
         {
-            var Author = new Domain.Author
+            var Author = new Author
             {
                 Name = AuthorDto.Name,
                 Phone = AuthorDto.Phone
@@ -39,10 +40,8 @@ namespace Application
             {
                 throw new InvalidOperationException("Author not found.");
             }
-
             existingAuthor.Name = authorDto.Name;
             existingAuthor.Phone = authorDto.Phone;
-
             _authorRepository.Update(existingAuthor);
         }
 
@@ -53,7 +52,6 @@ namespace Application
             {
                 throw new InvalidOperationException("Author not found.");
             }
-
             _authorRepository.Delete(id);
         }
 
@@ -81,7 +79,7 @@ namespace Application
                 Id = author.Id,
                 Name = author.Name,
                 Phone = author.Phone
-            }).ToList();
+            });
         }
     }
 }

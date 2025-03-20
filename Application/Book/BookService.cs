@@ -16,11 +16,11 @@ namespace Application
             _bookRepository = BookRepository;
         }
 
-        public void AddBook(BookDto BookDto)
+        public void AddBook(BookDto bookDto)
         {
             var Book = new Domain.Book
             {
-                Name = BookDto.Name
+                Name = bookDto.Name
             };
             _bookRepository.Add(Book);
         }
@@ -75,7 +75,7 @@ namespace Application
             {
                 Id = book.Id,
                 Name = book.Name
-            }).ToList();
+            });
         }
     }
 }

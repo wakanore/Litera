@@ -19,6 +19,10 @@ namespace Application
 
         public void AddReader(ReaderDto ReaderDto)
         {
+            if (ReaderDto == null)
+            {
+                throw new ArgumentNullException(nameof(ReaderDto), "ReaderDto cannot be null.");
+            }
             var Reader = new Domain.Reader
             {
                 Name = ReaderDto.Name,

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Application;
 
 namespace WebApplication1.Controllers
 {
@@ -7,9 +8,9 @@ namespace WebApplication1.Controllers
     [Route("api/[[reader]]")]
     public class ReaderController : ControllerBase
     {
-        private readonly Application.ReaderService _readerService;
+        private readonly ReaderService _readerService;
 
-        public ReaderController(Application.ReaderService readerService)
+        public ReaderController(ReaderService readerService)
         {
             _readerService = readerService;
         }
@@ -31,14 +32,14 @@ namespace WebApplication1.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Application.ReaderDto readerDto)
+        public IActionResult Create(ReaderDto readerDto)
         {
             _readerService.AddReader(readerDto);
             return CreatedAtAction(nameof(GetById), new { id = readerDto.Id }, readerDto);
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id, Application.ReaderDto readerDto)
+        public IActionResult Update(int id, ReaderDto readerDto)
         {
             if (id != readerDto.Id)
                 return BadRequest();
