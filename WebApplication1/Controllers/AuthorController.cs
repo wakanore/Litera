@@ -1,15 +1,15 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Application;
 
-namespace WebApplication1.Controllers
+namespace API.Controllers
 {
     [ApiController]
     [Route("api/[[author]]")]
     public class AuthorController : ControllerBase
     {
-        private readonly Application.AuthorService _authorService;
+        private readonly AuthorService _authorService;
 
-        public AuthorController(Application.AuthorService authorService)
+        public AuthorController(AuthorService authorService)
         {
             _authorService = authorService;
         }
@@ -31,14 +31,14 @@ namespace WebApplication1.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Application.AuthorDto authorDto)
+        public IActionResult Create(AuthorDto authorDto)
         {
             _authorService.AddAuthor(authorDto);
             return CreatedAtAction(nameof(GetById), new { id = authorDto.Id }, authorDto);
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id, Application.AuthorDto authorDto)
+        public IActionResult Update(int id, AuthorDto authorDto)
         {
             if (id != authorDto.Id)
                 return BadRequest();

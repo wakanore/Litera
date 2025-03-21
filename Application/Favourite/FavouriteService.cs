@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Infrastructure;
+using Domain;
 
 namespace Application
 {
@@ -11,15 +10,15 @@ namespace Application
     {
         private readonly IFavouriteRepository _favouriteRepository;
 
-        public FavouriteService(IFavouriteRepository FavouriteRepository)
+        public FavouriteService(IFavouriteRepository favouriteRepository)
         {
-            _favouriteRepository = FavouriteRepository;
+            _favouriteRepository = favouriteRepository;
         }
 
 
         public void AddFavourite(FavouriteDto favouriteDto)
         {
-            var favourite = new Domain.Favourite
+            var favourite = new Favourite
             {
                 AuthorId = favouriteDto.AuthorId
             };

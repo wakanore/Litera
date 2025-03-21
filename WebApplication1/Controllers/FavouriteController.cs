@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Application;
 
-namespace WebApplication1.Controllers
+namespace API.Controllers
 {
     [Route("api/[[favourite]]")]
     [ApiController]

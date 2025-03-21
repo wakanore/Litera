@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Application;
 using Infrastructure;
 using Domain;
 
@@ -13,17 +10,17 @@ namespace Application
     {
         private readonly IAuthorRepository _authorRepository;
 
-        public AuthorService(IAuthorRepository AuthorRepository)
+        public AuthorService(IAuthorRepository authorRepository)
         {
-            _authorRepository = AuthorRepository;
+            _authorRepository = authorRepository;
         }
 
         public void AddAuthor(AuthorDto authorDto)
         {
             var Author = new Author
             {
-                Name = AuthorDto.Name,
-                Phone = AuthorDto.Phone
+                Name = authorDto.Name,
+                Phone = authorDto.Phone
             };
             _authorRepository.Add(Author);
         }

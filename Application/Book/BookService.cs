@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Domain;
 using Infrastructure;
 
 namespace Application
@@ -11,14 +10,14 @@ namespace Application
     {
         private readonly IBookRepository _bookRepository;
 
-        public BookService(IBookRepository BookRepository)
+        public BookService(IBookRepository bookRepository)
         {
-            _bookRepository = BookRepository;
+            _bookRepository = bookRepository;
         }
 
         public void AddBook(BookDto bookDto)
         {
-            var Book = new Domain.Book
+            var Book = new Book
             {
                 Name = bookDto.Name
             };

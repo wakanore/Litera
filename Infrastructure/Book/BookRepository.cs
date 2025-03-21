@@ -2,8 +2,6 @@
 using Domain;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure
 {
@@ -18,7 +16,7 @@ namespace Infrastructure
             _books.Add(new Book { Id = 4, Name = "The Brothers Karamazov", AuthorId = 2 });
             _books.Add(new Book { Id = 5, Name = "The Cherry Orchard", AuthorId = 3 });
         }
-        public void Add(Domain.Book book)
+        public void Add(Book book)
         {
             if (_books.Any(b => b.Id == book.Id))
             {
@@ -28,7 +26,7 @@ namespace Infrastructure
             _books.Add(book);
         }
 
-        public void Update(Domain.Book book)
+        public void Update(Book book)
         {
             var existingBook = _books.FirstOrDefault(b => b.Id == book.Id);
             if (existingBook == null)
@@ -51,7 +49,7 @@ namespace Infrastructure
 
             _books.Remove(bookToDelete);
         }
-        public Domain.Book GetById(int id)
+        public Book GetById(int id)
         {
             var book = _books.FirstOrDefault(b => b.Id == id);
             if (book == null)
@@ -61,7 +59,7 @@ namespace Infrastructure
 
             return book;
         }
-        public IEnumerable<Domain.Book> GetAll()
+        public IEnumerable<Book> GetAll()
         {
             return _books;
         }

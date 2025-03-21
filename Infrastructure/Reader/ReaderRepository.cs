@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure
 {
@@ -32,7 +30,7 @@ namespace Infrastructure
             _readers.Add(reader);
         }
 
-        public void Update(Domain.Reader reader)
+        public void Update(Reader reader)
         {
             var existingReader = _readers.FirstOrDefault(r => r.Id == reader.Id);
             if (existingReader == null)
@@ -55,7 +53,7 @@ namespace Infrastructure
 
             _readers.Remove(readerToDelete);
         }
-        public Domain.Reader GetById(int id)
+        public Reader GetById(int id)
         {
             var reader = _readers.FirstOrDefault(r => r.Id == id);
             if (reader == null)
@@ -66,7 +64,7 @@ namespace Infrastructure
             return reader;
         }
 
-        public IEnumerable<Domain.Reader> GetAll()
+        public IEnumerable<Reader> GetAll()
         {
             return _readers; // Возвращаем всех читателей
         }

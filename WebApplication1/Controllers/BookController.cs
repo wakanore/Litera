@@ -1,15 +1,15 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Application;
 
-namespace WebApplication1.Controllers
+namespace API.Controllers
 {
     [ApiController]
     [Route("api/[[book]]")]
     public class BookController : ControllerBase
     {
-        private readonly Application.BookService _bookService;
+        private readonly BookService _bookService;
 
-        public BookController(Application.BookService bookService)
+        public BookController(BookService bookService)
         {
             _bookService = bookService;
         }
@@ -31,14 +31,14 @@ namespace WebApplication1.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Application.BookDto bookDto)
+        public IActionResult Create(BookDto bookDto)
         {
             _bookService.AddBook(bookDto);
             return CreatedAtAction(nameof(GetById), new { id = bookDto.Id }, bookDto);
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id, Application.BookDto bookDto)
+        public IActionResult Update(int id, BookDto bookDto)
         {
             if (id != bookDto.Id)
                 return BadRequest();

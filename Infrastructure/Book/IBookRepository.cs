@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Domain;
 
 namespace Infrastructure
 {
     public interface IBookRepository
     {
-        void Add(Domain.Book book);
-        void Update(Domain.Book book);
+        void Add(Book book);
+        void Update(Book book);
         void Delete(int id);
-        Domain.Book GetById(int id);
-        IEnumerable<Domain.Book> GetAll();
+        Book GetById(int id);
+        IEnumerable<Book> GetAll();
     }
 }

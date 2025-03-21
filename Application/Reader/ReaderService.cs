@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Infrastructure;
+using Domain;
 
 namespace Application
 {
@@ -11,22 +10,22 @@ namespace Application
     {
         private readonly IReaderRepository _readerRepository;
 
-        public ReaderService(IReaderRepository ReaderRepository)
+        public ReaderService(IReaderRepository readerRepository)
         {
-            _readerRepository = ReaderRepository;
+            _readerRepository = readerRepository;
         }
 
 
-        public void AddReader(ReaderDto ReaderDto)
+        public void AddReader(ReaderDto readerDto)
         {
-            if (ReaderDto == null)
+            if (readerDto == null)
             {
-                throw new ArgumentNullException(nameof(ReaderDto), "ReaderDto cannot be null.");
+                throw new ArgumentNullException(nameof(readerDto), "ReaderDto cannot be null.");
             }
-            var Reader = new Domain.Reader
+            var Reader = new Reader
             {
-                Name = ReaderDto.Name,
-                Phone = ReaderDto.Phone
+                Name = readerDto.Name,
+                Phone = readerDto.Phone
             };
             _readerRepository.Add(Reader);
         }
