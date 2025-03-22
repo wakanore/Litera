@@ -6,7 +6,7 @@ namespace Infrastructure
 {
     public interface IAuthorRepository
     {
-        void Add(Author user);
+        Author Add(Author user);
         void Update(Author user);
         void Delete(int id);
         Author GetById(int id);

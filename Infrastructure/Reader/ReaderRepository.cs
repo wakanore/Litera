@@ -20,14 +20,11 @@ namespace Infrastructure
             _readers.Add(new Reader { Id = 7, Name = "Alexey", Phone = "+79405678901" });
         }
 
-        public void Add(Reader reader)
+        public Reader Add(Reader reader)
         {
-            if (_readers.Any(r => r.Id == reader.Id))
-            {
-                throw new InvalidOperationException("Reader with the same ID already exists.");
-            }
-
+            reader.Id = _readers.Any() ? _readers.Max(a => a.Id) + 1 : 1;
             _readers.Add(reader);
+            return reader;
         }
 
         public void Update(Reader reader)

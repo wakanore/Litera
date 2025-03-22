@@ -18,10 +18,10 @@ builder.Services.AddScoped<IReaderRepository, ReaderRepository>();
 builder.Services.AddScoped<IFavouriteRepository, FavouriteRepository>();
 
 // Registration service
-builder.Services.AddScoped<AuthorService>();
-builder.Services.AddScoped<BookService>();
-builder.Services.AddScoped<ReaderService>();
-builder.Services.AddScoped<FavouriteService>();
+builder.Services.AddScoped<IBookService, BookService>();
+builder.Services.AddScoped<IAuthorService, AuthorService>();
+builder.Services.AddScoped<IReaderService, ReaderService>();
+builder.Services.AddScoped<IFavouriteService, FavouriteService>();
 
 
 builder.Services.AddControllers();

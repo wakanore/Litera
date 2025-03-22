@@ -15,15 +15,22 @@ namespace Application
             _bookRepository = bookRepository;
         }
 
-        public void AddBook(BookDto bookDto)
+        public BookDto AddBook(BookDto bookDto)
         {
-            var Book = new Book
+            var book = new Book
             {
                 Name = bookDto.Name
             };
-            _bookRepository.Add(Book);
+
+            var createdBook = _bookRepository.Add(book);
+
+            return new BookDto
+            {
+                Id = createdBook.Id,
+                Name = createdBook.Name
+            };
         }
-        public void UpdateBook(BookDto bookDto)
+        public bool UpdateBook(BookDto bookDto)
         {
             if (bookDto == null)
             {
@@ -39,9 +46,10 @@ namespace Application
             existingBook.Name = bookDto.Name;
 
             _bookRepository.Update(existingBook);
+            return true;
         }
 
-        public void DeleteBook(int id)
+        public bool DeleteBook(int id)
         {
             var bookToDelete = _bookRepository.GetById(id);
             if (bookToDelete == null)
@@ -50,6 +58,7 @@ namespace Application
             }
 
             _bookRepository.Delete(id);
+            return true;
         }
 
         public BookDto GetBookById(int id)

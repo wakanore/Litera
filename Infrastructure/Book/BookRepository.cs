@@ -16,14 +16,11 @@ namespace Infrastructure
             _books.Add(new Book { Id = 4, Name = "The Brothers Karamazov", AuthorId = 2 });
             _books.Add(new Book { Id = 5, Name = "The Cherry Orchard", AuthorId = 3 });
         }
-        public void Add(Book book)
+        public Book Add(Book book)
         {
-            if (_books.Any(b => b.Id == book.Id))
-            {
-                throw new InvalidOperationException("Book with the same ID already exists.");
-            }
-
+            book.Id = _books.Any() ? _books.Max(a => a.Id) + 1 : 1;
             _books.Add(book);
+            return book;
         }
 
         public void Update(Book book)

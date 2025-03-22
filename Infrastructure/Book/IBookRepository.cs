@@ -6,7 +6,7 @@ namespace Infrastructure
 {
     public interface IBookRepository
     {
-        void Add(Book book);
+        Book Add(Book book);
         void Update(Book book);
         void Delete(int id);
         Book GetById(int id);

@@ -24,8 +24,12 @@ namespace API.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            _favouriteService.DeleteFavourite(id);
-            return NoContent();
+            bool isDelete = _favouriteService.DeleteFavourite(id);
+
+            if (isDelete)
+                return NoContent();
+            else
+                return NotFound();
         }
     }
 }

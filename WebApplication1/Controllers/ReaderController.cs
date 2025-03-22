@@ -43,14 +43,23 @@ namespace API.Controllers
             if (id != readerDto.Id)
                 return BadRequest();
             _readerService.UpdateReader(readerDto);
-            return NoContent();
+            bool isUpdated = _readerService.UpdateReader(readerDto);
+
+            if (isUpdated)
+                return NoContent(); 
+            else
+                return NotFound(); 
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            _readerService.DeleteReader(id);
-            return NoContent();
+            bool isDelete = _readerService.DeleteReader(id);
+
+            if (isDelete)
+                return NoContent();
+            else
+                return NotFound(); 
         }
     }
 }

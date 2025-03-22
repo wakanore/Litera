@@ -16,16 +16,17 @@ namespace Application
         }
 
 
-        public void AddFavourite(FavouriteDto favouriteDto)
+        public bool AddFavourite(FavouriteDto favouriteDto)
         {
             var favourite = new Favourite
             {
                 AuthorId = favouriteDto.AuthorId
             };
             _favouriteRepository.Add(favourite);
+            return true;
         }
         
-        public void DeleteFavourite(int id)
+        public bool DeleteFavourite(int id)
         {
             try
             {
@@ -35,6 +36,7 @@ namespace Application
             {
                 throw new InvalidOperationException("Favourite not found.", ex);
             }
+            return true;
         }
 
         public IEnumerable<FavouriteDto> GetAllFavourite()

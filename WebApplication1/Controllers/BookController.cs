@@ -43,14 +43,23 @@ namespace API.Controllers
             if (id != bookDto.Id)
                 return BadRequest();
             _bookService.UpdateBook(bookDto);
-            return NoContent();
+            bool isUpdated = _bookService.UpdateBook(bookDto);
+
+            if (isUpdated)
+                return NoContent(); 
+            else
+                return NotFound(); 
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            _bookService.DeleteBook(id);
-            return NoContent();
+            bool isDeleted = _bookService.DeleteBook(id);
+
+            if (isDeleted)
+                return NoContent();
+            else
+                return NotFound();
         }
     }
 }

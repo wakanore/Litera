@@ -4,6 +4,7 @@ using System.Linq;
 using Infrastructure;
 using Domain;
 
+
 namespace Application
 {
     public class ReaderService : IReaderService
@@ -16,21 +17,26 @@ namespace Application
         }
 
 
-        public void AddReader(ReaderDto readerDto)
+        public ReaderDto AddReader(ReaderDto readerDto)
         {
-            if (readerDto == null)
-            {
-                throw new ArgumentNullException(nameof(readerDto), "ReaderDto cannot be null.");
-            }
-            var Reader = new Reader
+            var reader = new Reader
             {
                 Name = readerDto.Name,
                 Phone = readerDto.Phone
             };
-            _readerRepository.Add(Reader);
+
+            var createdReader = _readerRepository.Add(reader);
+
+
+            return new ReaderDto
+            {
+                Id = createdReader.Id,
+                Name = createdReader.Name,
+                Phone = createdReader.Phone
+            };
         }
 
-        public void UpdateReader(ReaderDto readerDto)
+        public bool UpdateReader(ReaderDto readerDto)
         {
             if (readerDto == null)
             {
@@ -47,9 +53,10 @@ namespace Application
             existingReader.Phone = readerDto.Phone;
 
             _readerRepository.Update(existingReader);
+            return true;
         }
 
-        public void DeleteReader(int id)
+        public bool DeleteReader(int id)
         {
             var readerToDelete = _readerRepository.GetById(id);
             if (readerToDelete == null)
@@ -58,6 +65,7 @@ namespace Application
             }
 
             _readerRepository.Delete(id);
+            return true;
         }
 
         public ReaderDto GetReaderById(int id)

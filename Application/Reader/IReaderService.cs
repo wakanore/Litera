@@ -5,9 +5,9 @@ namespace Application
 {
     public interface IReaderService
     {
-        void AddReader(ReaderDto readerDto);
-        void UpdateReader(ReaderDto readerDto);
-        void DeleteReader(int id);
+        ReaderDto AddReader(ReaderDto readerDto);
+        bool UpdateReader(ReaderDto readerDto);
+        bool DeleteReader(int id);
         ReaderDto GetReaderById(int id);
         IEnumerable<ReaderDto> GetAll();
     }

@@ -43,14 +43,23 @@ namespace API.Controllers
             if (id != authorDto.Id)
                 return BadRequest();
             _authorService.UpdateAuthor(authorDto);
-            return NoContent();
+            bool isUpdated = _authorService.UpdateAuthor(authorDto);
+
+            if (isUpdated)
+                return NoContent(); 
+            else
+                return NotFound(); 
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            _authorService.DeleteAuthor(id);
-            return NoContent();
+            bool isDeleted = _authorService.DeleteAuthor(id);
+
+            if (isDeleted)
+                return NoContent();
+            else
+                return NotFound();
         }
     }
 }

@@ -5,8 +5,8 @@ namespace Application
 {
     public interface IFavouriteService
     {
-        void AddFavourite(FavouriteDto favouriteDto);
-        void DeleteFavourite(int id);
+        bool AddFavourite(FavouriteDto favouriteDto);
+        bool DeleteFavourite(int id);
         IEnumerable<FavouriteDto> GetAllFavourite();
     }
 }

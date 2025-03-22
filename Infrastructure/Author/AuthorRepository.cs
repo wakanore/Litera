@@ -20,14 +20,11 @@ namespace Infrastructure
 
         }
 
-        public void Add(Author author)
+        public Author Add(Author author)
         {
-            if (_authors.Any(a => a.Id == author.Id))
-            {
-                throw new InvalidOperationException("Author with the same ID already exists.");
-            }
-
+            author.Id = _authors.Any() ? _authors.Max(a => a.Id) + 1 : 1;
             _authors.Add(author);
+            return author;
         }
 
         public void Update(Author author)
