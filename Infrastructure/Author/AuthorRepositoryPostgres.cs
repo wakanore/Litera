@@ -7,11 +7,11 @@ using Domain;
 
 namespace Infrastructure
 {
-    public class AuthorRepository : IAuthorRepository
+    public class AuthorPostgresRepository : IAuthorRepository
     {
         private readonly IDbConnection _db;
 
-        public AuthorRepository(IDbConnection db)
+        public AuthorPostgresRepository(IDbConnection db)
         {
             _db = db;
         }
@@ -56,7 +56,7 @@ namespace Infrastructure
 
         public async Task<Author> GetById(int id)
         {
-            const string sql = "SELECT * FROM Authors WHERE Id = @Id;";
+            const string sql = "SELECT id, name, phone, description FROM Authors WHERE Id = @Id;";
 
             var author = await _db.QuerySingleOrDefaultAsync<Author>(sql, new { Id = id });
             if (author == null)
@@ -69,7 +69,7 @@ namespace Infrastructure
 
         public async Task<IEnumerable<Author>> GetAll()
         {
-            const string sql = "SELECT * FROM Authors ORDER BY Name;";
+            const string sql = "SELECT id, name, phone, description FROM Authors ORDER BY Name;";
             return await _db.QueryAsync<Author>(sql);
         }
 

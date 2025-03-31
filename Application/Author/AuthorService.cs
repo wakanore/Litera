@@ -15,12 +15,9 @@ namespace Application
             _authorRepository = authorRepository;
         }
 
-        // Все методы делаем асинхронными
         public async Task<Author> AddAuthor(Author author)
         {
             var addedAuthor = await _authorRepository.Add(author);
-            // Теперь можно обращаться к свойствам:
-            Console.WriteLine($"Added author: {addedAuthor.Name}");
             return addedAuthor;
         }
 
@@ -53,7 +50,6 @@ namespace Application
         public async Task<Author> GetAuthorById(int id)
         {
             var author = await _authorRepository.GetById(id);
-            Console.WriteLine($"Retrieved author: {author.Name}");
             return author;
         }
 

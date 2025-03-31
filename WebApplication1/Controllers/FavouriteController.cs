@@ -3,16 +3,11 @@ using Application;
 
 namespace API.Controllers
 {
-    [Route("api/[[favourite]]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class FavouriteController : ControllerBase
     {
-        private readonly FavouriteService _favouriteService;
-
-        public FavouriteController(FavouriteService favouriteService)
-        {
-            _favouriteService = favouriteService;
-        }
+        private readonly IFavouriteService _favouriteService;
 
         [HttpDelete("{authorId}/{readerId}")]
         public async Task<IActionResult> Delete(int authorId, int readerId)
@@ -21,6 +16,32 @@ namespace API.Controllers
             {
                 bool isDeleted = await _favouriteService.DeleteFavourite(authorId, readerId);
                 return isDeleted ? NoContent() : NotFound();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> Add([FromBody] FavouriteDto favouriteDto)
+        {
+            try
+            {
+                // Check if the favorite already exists
+                bool alreadyExists = await _favouriteService.FavouriteExists(favouriteDto.AuthorId, favouriteDto.ReaderId);
+                if (alreadyExists)
+                {
+                    return Conflict("This favorite already exists");
+                }
+
+                // Create new favorite
+                bool isAdded = await _favouriteService.AddFavourite(favouriteDto);
+
+                return CreatedAtRoute(new
+                {
+                    authorId = favouriteDto.AuthorId,
+                    readerId = favouriteDto.ReaderId
+                }, null);
             }
             catch (Exception ex)
             {

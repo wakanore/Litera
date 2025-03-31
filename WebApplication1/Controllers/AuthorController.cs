@@ -2,6 +2,7 @@
 using Application;
 using Domain;
 using Infrastructure;
+using Application.Services;
 
 namespace API.Controllers
 {
@@ -9,20 +10,8 @@ namespace API.Controllers
     [Route("api/[[author]]")]
     public class AuthorController : ControllerBase
     {
-        private readonly AuthorService _authorService;
-        private readonly IAuthorRepository _authorRepository; // 1. Объявляем поле
-
-        // 2. Добавляем конструктор с внедрением зависимости
-        public AuthorController(IAuthorRepository authorRepository)
-        {
-            _authorRepository = authorRepository ?? throw new ArgumentNullException(nameof(authorRepository));
-        }
-
-
-        public AuthorController(AuthorService authorService)
-        {
-            _authorService = authorService;
-        }
+        private readonly IAuthorService _authorService;
+        private readonly IAuthorRepository _authorRepository;
 
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
@@ -43,12 +32,10 @@ namespace API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] AuthorDto authorDto)
         {
-            // Преобразуем DTO в Domain модель
             var author = new Author
             {
                 Name = authorDto.Name,
                 Phone = authorDto.Phone
-                // Другие свойства по необходимости
             };
 
             var result = await _authorRepository.Add(author);
@@ -60,13 +47,11 @@ namespace API.Controllers
         {
             try
             {
-                // 1. Проверка соответствия ID в пути и теле запроса
                 if (id != authorDto.Id)
                 {
                     return BadRequest("ID in URL does not match ID in body");
                 }
 
-                // 2. Преобразование DTO в Domain модель
                 var author = new Author
                 {
                     Id = authorDto.Id,
@@ -74,10 +59,8 @@ namespace API.Controllers
                     Phone = authorDto.Phone
                 };
 
-                // 3. Вызов сервиса (асинхронная версия)
                 bool isUpdated = await _authorService.UpdateAuthorAsync(author);
 
-                // 4. Возврат результата
                 return isUpdated ? NoContent() : NotFound();
             }
             catch (Exception ex)
@@ -89,18 +72,11 @@ namespace API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            try
-            {
-                bool deleted = await _authorService.DeleteAuthorAsync(id);
+            bool deleted = await _authorService.DeleteAuthorAsync(id);
 
-                return deleted
-                    ? NoContent()
-                    : NotFound($"Author with id {id} not found");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+            return deleted
+                ? NoContent()
+                : NotFound($"Author with id {id} not found");
         }
     }
 }

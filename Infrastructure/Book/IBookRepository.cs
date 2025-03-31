@@ -6,11 +6,10 @@ namespace Infrastructure
 {
     public interface IBookRepository
     {
-        Task<Book> Add(Book book);
-        Task<bool> Update(Book book);
+        Task<Book> Add(BookDto book);
+        Task<bool> Update(BookDto book);
         Task Delete(int id);
         Task<Book> GetById(int id);
-        Task<IEnumerable<Book>> GetAll();
-        Task InitializeData();
+        Task<IEnumerable<BookDto>> GetAll();
     }
 }

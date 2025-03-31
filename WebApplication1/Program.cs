@@ -1,7 +1,8 @@
 using Application;
 using Application.Services;
 using Infrastructure;
-using Microsoft.EntityFrameworkCore;
+using Npgsql;
+using System.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,10 +15,10 @@ builder.Services.AddSwaggerGen();
 
 
 // Registration repositories
-builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
-builder.Services.AddScoped<IBookRepository, BookRepository>();
-builder.Services.AddScoped<IReaderRepository, ReaderRepository>();
-builder.Services.AddScoped<IFavouriteRepository, FavouriteRepository>();
+builder.Services.AddScoped<IAuthorRepository, AuthorPostgresRepository>();
+builder.Services.AddScoped<IBookRepository, BookPostgresRepository>();
+builder.Services.AddScoped<IReaderRepository, ReaderPostgresRepository>();
+builder.Services.AddScoped<IFavouriteRepository, FavouritePostgresRepository>();
 
 // Registration service
 builder.Services.AddScoped<IBookService, BookService>();
@@ -25,10 +26,14 @@ builder.Services.AddScoped<IAuthorService, AuthorService>();
 builder.Services.AddScoped<IReaderService, ReaderService>();
 builder.Services.AddScoped<IFavouriteService, FavouriteService>();
 
+builder.Services.AddScoped<IDbConnection>(provider =>
+{
+    var connection = new NpgsqlConnection(builder.Configuration.GetConnectionString("PostgreSQL"));
+    connection.Open();
+    return connection;
+});
 
-// connect PostgreSQL
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSQL")));
+builder.Services.AddScoped<AppDbContext>();
 
 
 
@@ -50,3 +55,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+

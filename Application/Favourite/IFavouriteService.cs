@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using Infrastructure;
 
 namespace Application
 {
     public interface IFavouriteService
     {
-        bool AddFavourite(FavouriteDto favouriteDto);
+        Task<bool> AddFavourite(FavouriteDto favouriteDto);
+        Task<bool> FavouriteExists(int authorId, int readerId);
         Task<bool> DeleteFavourite(int authorId, int readerId);
     }
 }

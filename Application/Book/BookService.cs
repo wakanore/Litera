@@ -16,23 +16,15 @@ namespace Application.Services
             _bookRepository = bookRepository;
         }
 
-        public async Task<Book> AddBook(Book book)
+        public  Task<Book> AddBook(BookDto book)
         {
-            var addedBook = await _bookRepository.Add(book);
+            var addedBook = _bookRepository.Add(book);
             return addedBook;
         }
 
-        public async Task<bool> UpdateBookAsync(Book book)
+        public  Task<bool> UpdateBookAsync(BookDto book)
         {
-            try
-            {
-                await _bookRepository.Update(book);
-                return true;
-            }
-            catch (KeyNotFoundException)
-            {
-                return false;
-            }
+            return _bookRepository.Update(book);
         }
 
         public async Task<bool> DeleteBookAsync(int id)
@@ -52,21 +44,15 @@ namespace Application.Services
             }
         }
 
-        public async Task<Book> GetBookById(int id)
+        public Task<Book> GetBookById(int id)
         {
-            var book = await _bookRepository.GetById(id);
-            Console.WriteLine($"Retrieved author: {book.Name}");
+            var book = _bookRepository.GetById(id);
             return book;
         }
 
-        public async Task<IEnumerable<Book>> GetAllBooks()
+        public Task<IEnumerable<BookDto>> GetAllBooks()
         {
-            return await _bookRepository.GetAll();
-        }
-
-        public async Task InitializeBooksData()
-        {
-            await _bookRepository.InitializeData();
+            return  _bookRepository.GetAll();
         }
     }
 }

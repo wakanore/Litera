@@ -1,7 +1,7 @@
 ﻿using System;
 
 
-namespace Application
+namespace Infrastructure
 {
     public class AuthorDto
     {

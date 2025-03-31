@@ -22,26 +22,13 @@ public class MigrationService : IMigrationService
     {
         using var scope = _serviceProvider.CreateScope();
         var runner = scope.ServiceProvider.GetRequiredService<IMigrationRunner>();
-
-        if (runner.HasMigrationsToApplyUp())
-        {
-            Console.WriteLine("Applying database migrations...");
-            runner.MigrateUp();
-            Console.WriteLine("Migrations applied successfully!");
-        }
-        else
-        {
-            Console.WriteLine("No pending migrations found.");
-        }
+        runner.MigrateUp();
     }
 
     public void RollbackMigration(long version)
     {
         using var scope = _serviceProvider.CreateScope();
         var runner = scope.ServiceProvider.GetRequiredService<IMigrationRunner>();
-
-        Console.WriteLine($"Rolling back to migration {version}...");
         runner.MigrateDown(version);
-        Console.WriteLine($"Successfully rolled back to {version}");
     }
 }

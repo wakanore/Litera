@@ -6,8 +6,7 @@ namespace Infrastructure
 {
     public interface IAuthorRepository
     {
-
-        Task<Author> Add(Author author); // Делаем метод асинхронным
+        Task<Author> Add(Author author); 
         Task Update(Author author);
         Task Delete(int id);
         Task<Author> GetById(int id);

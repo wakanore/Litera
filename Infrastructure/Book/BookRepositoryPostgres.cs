@@ -7,16 +7,16 @@ using Domain;
 
 namespace Infrastructure
 {
-    public class BookRepository : IBookRepository
+    public class BookPostgresRepository : IBookRepository
     {
         private readonly IDbConnection _db;
 
-        public BookRepository(IDbConnection db)
+        public BookPostgresRepository(IDbConnection db)
         {
             _db = db;
         }
 
-        public async Task<Book> Add(Book book)
+        public async Task<Book> Add(BookDto book)
         {
             const string sql = @"
                 INSERT INTO Books (Name, Style, AuthorId, CreatedDate, LinkToCover)
@@ -26,7 +26,7 @@ namespace Infrastructure
             return await _db.QuerySingleAsync<Book>(sql, book);
         }
 
-        public async Task<bool> Update(Book book)
+        public async Task<bool> Update(BookDto book)
         {
             const string sql = @"
         UPDATE Books 
@@ -44,7 +44,7 @@ namespace Infrastructure
                 throw new InvalidOperationException("Book not found.");
             }
 
-            return true; // Явно возвращаем true при успешном обновлении
+            return true; 
         }
 
         public async Task Delete(int id)
@@ -57,42 +57,12 @@ namespace Infrastructure
 
         public async Task<Book> GetById(int id)
         {
-            const string sql = @"
-                SELECT b.*, 
-                       a.Id, a.Name, a.Description, a.Phone,
-                       r.Id, r.Name, r.Email, r.BookId
-                FROM Books b
-                LEFT JOIN Authors a ON b.AuthorId = a.Id
-                LEFT JOIN Readers r ON b.Id = r.BookId
-                WHERE b.Id = @Id;";
-
-            var bookDict = new Dictionary<int, Book>();
-
-            var result = await _db.QueryAsync<Book, Author, Reader, Book>(
-                sql,
-                (book, author, reader) =>
-                {
-                    if (!bookDict.TryGetValue(book.Id, out var bookEntry))
-                    {
-                        bookEntry = book;
-                        bookEntry.Readers = new List<Reader>();
-                        bookDict.Add(bookEntry.Id, bookEntry);
-                    }
-
-                    bookEntry.Author = author;
-                    if (reader != null)
-                        bookEntry.Readers.Add(reader);
-
-                    return bookEntry;
-                },
-                new { Id = id },
-                splitOn: "Id,Id");
-
-            return bookDict.Values.FirstOrDefault()
-                ?? throw new InvalidOperationException("Book not found.");
+            const string sql = "SELECT * FROM Books WHERE Id = @Id";
+            return await _db.QueryFirstOrDefaultAsync<Book>(sql, new { Id = id })
+                ?? throw new KeyNotFoundException("Book not found");
         }
 
-        public async Task<IEnumerable<Book>> GetAll()
+        public async Task<IEnumerable<BookDto>> GetAll()
         {
             const string sql = @"
                 SELECT b.*, 
@@ -103,9 +73,9 @@ namespace Infrastructure
                 LEFT JOIN Readers r ON b.Id = r.BookId
                 ORDER BY b.Name;";
 
-            var bookDict = new Dictionary<int, Book>();
+            var bookDict = new Dictionary<int, BookDto>();
 
-            await _db.QueryAsync<Book, Author, Reader, Book>(
+            await _db.QueryAsync<BookDto, Author, Reader, BookDto>(
                 sql,
                 (book, author, reader) =>
                 {
@@ -125,37 +95,6 @@ namespace Infrastructure
                 splitOn: "Id,Id");
 
             return bookDict.Values;
-        }
-
-        public async Task InitializeData()
-        {
-            var count = await _db.ExecuteScalarAsync<int>("SELECT COUNT(*) FROM Books;");
-            if (count > 0) return;
-
-            var initialBooks = new List<Book>
-            {
-                new Book
-                {
-                    Name = "War and Peace",
-                    Style = "Novel",
-                    AuthorId = 1,
-                    CreatedDate = DateTime.UtcNow,
-                    LinkToCover = "/covers/war_and_peace.jpg"
-                },
-                new Book
-                {
-                    Name = "Crime and Punishment",
-                    Style = "Psychological",
-                    AuthorId = 2,
-                    CreatedDate = DateTime.UtcNow,
-                    LinkToCover = "/covers/crime_and_punishment.jpg"
-                }
-            };
-
-            foreach (var book in initialBooks)
-            {
-                await Add(book);
-            }
         }
     }
 }

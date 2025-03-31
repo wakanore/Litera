@@ -10,9 +10,6 @@ namespace Domain
         public string Style { get; set; }
         public int AuthorId { get; set; }
         public DateTime CreatedDate { get; set; }
-        public List<Reader> Readers { get; set; }
         public string LinkToCover { get; set; }
-
-        public Author Author { get; set; }
     }
 }

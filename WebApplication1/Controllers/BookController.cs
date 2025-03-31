@@ -12,14 +12,8 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class BookController : ControllerBase
     {
-        private readonly BookService _bookService;
-        private readonly IBookRepository _bookRepository; // 1. Объявляем поле
-
-        // 2. Добавляем конструктор с внедрением зависимости
-        public BookController(IBookRepository bookRepository)
-        {
-            _bookRepository = bookRepository ?? throw new ArgumentNullException(nameof(bookRepository));
-        }
+        private readonly IBookService _bookService;
+        private readonly IBookRepository _bookRepository;
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
@@ -58,16 +52,13 @@ namespace API.Controllers
         {
             try
             {
-                // Преобразуем DTO в Domain модель
-                var book = new Book
+                var book = new BookDto
                 {
                     Name = bookDto.Name
                 };
 
-                // Добавляем книгу через репозиторий
                 var createdBook = await _bookRepository.Add(book);
 
-                // Преобразуем обратно в DTO для ответа
                 var resultDto = new BookDto
                 {
                     Id = createdBook.Id,
@@ -92,8 +83,7 @@ namespace API.Controllers
                     return BadRequest("ID in URL does not match ID in body");
                 }
 
-                // Преобразование DTO в Domain модель
-                var book = new Book
+                var book = new BookDto
                 {
                     Id = bookDto.Id,
                     Name = bookDto.Name

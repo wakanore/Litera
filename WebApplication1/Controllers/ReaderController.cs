@@ -12,14 +12,8 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class ReaderController : ControllerBase
     {
-        private readonly ReaderService _readerService;
-        private readonly IReaderRepository _readerRepository; // 1. Объявляем поле
-
-        // 2. Добавляем конструктор с внедрением зависимости
-        public ReaderController(IReaderRepository readerRepository)
-        {
-            _readerRepository = readerRepository ?? throw new ArgumentNullException(nameof(readerRepository));
-        }
+        private readonly IReaderService _readerService;
+        private readonly IReaderRepository _readerRepository;
 
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
@@ -40,12 +34,10 @@ namespace API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] ReaderDto readerDto)
         {
-            // Преобразуем DTO в Domain модель
-            var reader = new Reader
+            var reader = new ReaderDto
             {
                 Name = readerDto.Name,
                 Phone = readerDto.Phone
-                // Другие свойства по необходимости
             };
 
             var result = await _readerRepository.Add(reader);
@@ -57,24 +49,20 @@ namespace API.Controllers
         {
             try
             {
-                // 1. Проверка соответствия ID в пути и теле запроса
                 if (id != readerDto.Id)
                 {
                     return BadRequest("ID in URL does not match ID in body");
                 }
 
-                // 2. Преобразование DTO в Domain модель
-                var reader = new Reader
+                var reader = new ReaderDto
                 {
                     Id = readerDto.Id,
                     Name = readerDto.Name,
                     Phone = readerDto.Phone
                 };
 
-                // 3. Вызов сервиса (асинхронная версия)
                 bool isUpdated = await _readerRepository.Update(reader);
 
-                // 4. Возврат результата
                 return isUpdated ? NoContent() : NotFound();
             }
             catch (Exception ex)

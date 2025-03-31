@@ -1,15 +1,16 @@
 ﻿using Domain;
 using System;
 using System.Collections.Generic;
+using Infrastructure;
 
 namespace Application
 {
     public interface IReaderService
     {
-        Task<Reader> AddReader(Reader reader);
-        Task<bool> UpdateReaderAsync(Reader reader);
+        Task<ReaderDto> AddReader(ReaderDto reader);
+        Task<bool> UpdateReaderAsync(ReaderDto reader);
         Task<bool> DeleteReaderAsync(int id);
-        Task<Reader> GetReaderById(int id);
-        Task<IEnumerable<Reader>> GetAllReaders();
+        Task<ReaderDto> GetReaderById(int id);
+        Task<IEnumerable<ReaderDto>> GetAllReaders();
     }
 }

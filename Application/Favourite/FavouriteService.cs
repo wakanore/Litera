@@ -16,22 +16,26 @@ namespace Application
         }
 
 
-        public bool AddFavourite(FavouriteDto favouriteDto)
+        public async Task<bool> AddFavourite(FavouriteDto favouriteDto)
         {
             var favourite = new Favourite
             {
-                AuthorId = favouriteDto.AuthorId
+                AuthorId = favouriteDto.AuthorId,
+                ReaderId = favouriteDto.ReaderId
             };
-            _favouriteRepository.Add(favourite);
+            await _favouriteRepository.Add(favourite);
             return true;
+        }
+        public async Task<bool> FavouriteExists(int authorId, int readerId)
+        {
+            return await _favouriteRepository.FavouriteExists(authorId, readerId);
         }
 
         public async Task<bool> DeleteFavourite(int authorId, int readerId)
         {
             try
             {
-                var favourite = new Favourite { AuthorId = authorId, ReaderId = readerId };
-                await _favouriteRepository.Delete(favourite);
+                await _favouriteRepository.Delete(authorId, readerId);
                 return true;
             }
             catch (Exception ex)

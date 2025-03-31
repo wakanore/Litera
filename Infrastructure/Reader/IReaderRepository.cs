@@ -6,10 +6,10 @@ namespace Infrastructure
 {
     public interface IReaderRepository
     {
-        Task<Reader> Add(Reader reader);
-        Task<bool> Update(Reader reader);
+        Task<ReaderDto> Add(ReaderDto reader);
+        Task<bool> Update(ReaderDto reader);
         Task Delete(int id);
-        Task<Reader> GetById(int id);
-        Task<IEnumerable<Reader>> GetAll();
+        Task<ReaderDto> GetById(int id);
+        Task<IEnumerable<ReaderDto>> GetAll();
     }
 }
