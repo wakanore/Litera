@@ -72,27 +72,5 @@ namespace Infrastructure
             const string sql = "SELECT id, name, phone, description FROM Authors ORDER BY Name;";
             return await _db.QueryAsync<Author>(sql);
         }
-
-        public async Task InitializeData()
-        {
-            // Проверяем, есть ли уже данные в таблице
-            var count = await _db.ExecuteScalarAsync<int>("SELECT COUNT(*) FROM Authors;");
-            if (count > 0) return;
-
-            var initialAuthors = new List<Author>
-            {
-                new Author { Name = "Tolstoi", Phone = "+79104837659" },
-                new Author { Name = "Dostoevski", Phone = "+79214887395" },
-                new Author { Name = "Chekhov", Phone = "+79304857612" },
-                new Author { Name = "Pushkin", Phone = "+79414827364" },
-                new Author { Name = "Gogol", Phone = "+79504897653" },
-                new Author { Name = "Turgenev", Phone = "+79614857391" }
-            };
-
-            foreach (var author in initialAuthors)
-            {
-                await Add(author);
-            }
-        }
     }
 }

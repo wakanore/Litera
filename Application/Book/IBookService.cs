@@ -7,7 +7,7 @@ namespace Application
 {
     public interface IBookService
     {
-        Task<Book> AddBook(BookDto bookDto);
+        Task<BookDto> AddBook(BookDto bookDto);
         Task<bool> UpdateBookAsync(BookDto book);
         Task<bool> DeleteBookAsync(int id);
         Task<Book> GetBookById(int id);

@@ -16,15 +16,33 @@ namespace Application.Services
             _bookRepository = bookRepository;
         }
 
-        public  Task<Book> AddBook(BookDto book)
+        public async Task<BookDto> AddBook(BookDto bookDto)
         {
-            var addedBook = _bookRepository.Add(book);
-            return addedBook;
+            var domainBook = new Book
+            {
+                Name = bookDto.Name,
+                AuthorId = bookDto.Author.Id
+            };
+
+            var addedBook = await _bookRepository.Add(domainBook);
+
+            return new BookDto
+            {
+                Id = addedBook.Id,
+                Name = addedBook.Name
+            };
         }
 
-        public  Task<bool> UpdateBookAsync(BookDto book)
+        public async Task<bool> UpdateBookAsync(BookDto bookDto)
         {
-            return _bookRepository.Update(book);
+            var domainBook = new Domain.Book
+            {
+                Id = bookDto.Id,
+                Name = bookDto.Name,
+                AuthorId = bookDto.Author.Id
+            };
+
+            return await _bookRepository.Update(domainBook);
         }
 
         public async Task<bool> DeleteBookAsync(int id)
@@ -50,9 +68,14 @@ namespace Application.Services
             return book;
         }
 
-        public Task<IEnumerable<BookDto>> GetAllBooks()
+        public async Task<IEnumerable<BookDto>> GetAllBooks()
         {
-            return  _bookRepository.GetAll();
+            var books = await _bookRepository.GetAll();
+            return books.Select(book => new BookDto
+            {
+                Id = book.Id,
+                Name = book.Name
+            });
         }
     }
 }

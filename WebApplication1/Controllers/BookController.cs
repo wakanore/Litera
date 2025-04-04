@@ -13,7 +13,6 @@ namespace API.Controllers
     public class BookController : ControllerBase
     {
         private readonly IBookService _bookService;
-        private readonly IBookRepository _bookRepository;
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
@@ -57,7 +56,7 @@ namespace API.Controllers
                     Name = bookDto.Name
                 };
 
-                var createdBook = await _bookRepository.Add(book);
+                var createdBook = await _bookService.AddBook(book);
 
                 var resultDto = new BookDto
                 {
@@ -89,7 +88,7 @@ namespace API.Controllers
                     Name = bookDto.Name
                 };
 
-                var isUpdated = await _bookRepository.Update(book);
+                var isUpdated = await _bookService.UpdateBookAsync(book);
                 return isUpdated ? NoContent() : NotFound();
             }
             catch (Exception ex)

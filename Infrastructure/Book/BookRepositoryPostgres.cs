@@ -16,7 +16,7 @@ namespace Infrastructure
             _db = db;
         }
 
-        public async Task<Book> Add(BookDto book)
+        public async Task<Book> Add(Book book)
         {
             const string sql = @"
                 INSERT INTO Books (Name, Style, AuthorId, CreatedDate, LinkToCover)
@@ -26,7 +26,7 @@ namespace Infrastructure
             return await _db.QuerySingleAsync<Book>(sql, book);
         }
 
-        public async Task<bool> Update(BookDto book)
+        public async Task<bool> Update(Book book)
         {
             const string sql = @"
         UPDATE Books 
@@ -62,39 +62,19 @@ namespace Infrastructure
                 ?? throw new KeyNotFoundException("Book not found");
         }
 
-        public async Task<IEnumerable<BookDto>> GetAll()
+        public async Task<IEnumerable<Book>> GetAll()
         {
-            const string sql = @"
-                SELECT b.*, 
-                       a.Id, a.Name, a.Description, a.Phone,
-                       r.Id, r.Name, r.Email, r.BookId
-                FROM Books b
-                LEFT JOIN Authors a ON b.AuthorId = a.Id
-                LEFT JOIN Readers r ON b.Id = r.BookId
-                ORDER BY b.Name;";
+            var books = await _db.QueryAsync<Book>("SELECT * FROM Books ORDER BY Name");
 
-            var bookDict = new Dictionary<int, BookDto>();
+            var authors = await _db.QueryAsync<Author>("SELECT * FROM Authors WHERE Id IN (SELECT AuthorId FROM Books)");
 
-            await _db.QueryAsync<BookDto, Author, Reader, BookDto>(
-                sql,
-                (book, author, reader) =>
-                {
-                    if (!bookDict.TryGetValue(book.Id, out var bookEntry))
-                    {
-                        bookEntry = book;
-                        bookEntry.Readers = new List<Reader>();
-                        bookDict.Add(bookEntry.Id, bookEntry);
-                    }
+            var readers = await _db.QueryAsync<Reader>("SELECT * FROM Readers WHERE BookId IN (SELECT Id FROM Books)");
 
-                    bookEntry.Author = author;
-                    if (reader != null)
-                        bookEntry.Readers.Add(reader);
-
-                    return bookEntry;
-                },
-                splitOn: "Id,Id");
-
-            return bookDict.Values;
+            return books.Select(book =>
+            {
+                book.AuthorId = authors.FirstOrDefault(a => a.Id == book.AuthorId)?.Id ?? 0;
+                return book;
+            });
         }
     }
 }

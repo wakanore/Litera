@@ -63,7 +63,7 @@ namespace Infrastructure
 
         public IEnumerable<Reader> GetAll()
         {
-            return _readers; // Возвращаем всех читателей
+            return _readers;
         }
     }
 

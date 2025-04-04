@@ -27,14 +27,12 @@ namespace API.Controllers
         {
             try
             {
-                // Check if the favorite already exists
                 bool alreadyExists = await _favouriteService.FavouriteExists(favouriteDto.AuthorId, favouriteDto.ReaderId);
                 if (alreadyExists)
                 {
                     return Conflict("This favorite already exists");
                 }
 
-                // Create new favorite
                 bool isAdded = await _favouriteService.AddFavourite(favouriteDto);
 
                 return CreatedAtRoute(new

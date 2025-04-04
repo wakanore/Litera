@@ -35,7 +35,6 @@ namespace Infrastructure
                 throw new InvalidOperationException("Author not found.");
             }
 
-            // Обновляем данные автора
             existingAuthor.Name = author.Name;
             existingAuthor.Description = author.Description;
         }
@@ -63,7 +62,7 @@ namespace Infrastructure
 
         public IEnumerable<Author> GetAll()
         {
-            return _authors; // Возвращаем всех авторов
+            return _authors;
         }
     }
 }

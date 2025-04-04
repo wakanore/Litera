@@ -10,30 +10,40 @@ namespace Application
     public class ReaderService : IReaderService
     {
         private readonly IReaderRepository _readerRepository;
-        private readonly ILogger<ReaderService> _logger;
 
         public ReaderService(IReaderRepository readerRepository)
         {
-            _readerRepository = readerRepository ?? throw new ArgumentNullException(nameof(readerRepository));
+            _readerRepository = readerRepository;
         }
 
-        public Task<ReaderDto> AddReader(ReaderDto reader)
+        public async Task<ReaderDto> AddReader(ReaderDto readerDto)
         {
-            try
+            var readerEntity = new Reader
             {
-                var addedReader =  _readerRepository.Add(reader);
-                return addedReader;
-            }
-            catch (Exception ex)
+                Name = readerDto.Name,
+                Phone = readerDto.Phone,
+            };
+
+            var addedReader = await _readerRepository.Add(readerEntity);
+
+            return new ReaderDto
             {
-                throw;
-            }
+                Id = addedReader.Id,
+                Name = addedReader.Name,
+                Phone = addedReader.Phone
+            };
         }
 
-        public  Task<bool> UpdateReaderAsync(ReaderDto reader)
+        public async Task<bool> UpdateReaderAsync(ReaderDto readerDto)
         {
-            
-            return _readerRepository.Update(reader);  
+            var reader = new Domain.Reader
+            {
+                Id = readerDto.Id,
+                Name = readerDto.Name,
+                Phone = readerDto.Phone
+            };
+
+            return await _readerRepository.Update(reader);
         }
 
         public async Task<bool> DeleteReaderAsync(int id)
@@ -59,22 +69,34 @@ namespace Application
 
         public async Task<ReaderDto> GetReaderById(int id)
         {
-            try
+            var readerEntity = await _readerRepository.GetById(id);
+
+            if (readerEntity == null)
             {
-                var reader = await _readerRepository.GetById(id);
-                return reader;
+                return null;
             }
-            catch (Exception ex)
+
+            var readerDto = new ReaderDto
             {
-                throw;
-            }
+                Id = readerEntity.Id,
+                Name = readerEntity.Name,
+                Phone = readerEntity.Phone
+            };
+
+            return readerDto;
         }
 
-        public  Task<IEnumerable<ReaderDto>> GetAllReaders()
+        public async Task<IEnumerable<ReaderDto>> GetAllReaders()
         {
             try
             {
-                return  _readerRepository.GetAll();
+                var readers = await _readerRepository.GetAll();
+                return readers.Select(reader => new ReaderDto
+                {
+                    Id = reader.Id,
+                    Name = reader.Name,
+                    Phone = reader.Phone
+                });
             }
             catch (Exception ex)
             {

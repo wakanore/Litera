@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Infrastructure
+namespace Application
 {
     public class FavouriteDto
     {

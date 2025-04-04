@@ -11,7 +11,6 @@ namespace API.Controllers
     public class AuthorController : ControllerBase
     {
         private readonly IAuthorService _authorService;
-        private readonly IAuthorRepository _authorRepository;
 
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
@@ -38,7 +37,7 @@ namespace API.Controllers
                 Phone = authorDto.Phone
             };
 
-            var result = await _authorRepository.Add(author);
+            var result = await _authorService.AddAuthor(author);
             return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
         }
 

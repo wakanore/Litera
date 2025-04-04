@@ -13,7 +13,6 @@ namespace API.Controllers
     public class ReaderController : ControllerBase
     {
         private readonly IReaderService _readerService;
-        private readonly IReaderRepository _readerRepository;
 
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
@@ -40,7 +39,7 @@ namespace API.Controllers
                 Phone = readerDto.Phone
             };
 
-            var result = await _readerRepository.Add(reader);
+            var result = await _readerService.AddReader(reader);
             return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
         }
 
@@ -61,7 +60,7 @@ namespace API.Controllers
                     Phone = readerDto.Phone
                 };
 
-                bool isUpdated = await _readerRepository.Update(reader);
+                bool isUpdated = await _readerService.UpdateReaderAsync(reader);
 
                 return isUpdated ? NoContent() : NotFound();
             }

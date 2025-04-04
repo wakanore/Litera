@@ -26,9 +26,16 @@ builder.Services.AddScoped<IAuthorService, AuthorService>();
 builder.Services.AddScoped<IReaderService, ReaderService>();
 builder.Services.AddScoped<IFavouriteService, FavouriteService>();
 
-builder.Services.AddScoped<IDbConnection>(provider =>
+builder.Services.AddSingleton<NpgsqlDataSource>(serviceProvider =>
 {
-    var connection = new NpgsqlConnection(builder.Configuration.GetConnectionString("PostgreSQL"));
+    var connectionString = builder.Configuration.GetConnectionString("PostgreSQL");
+    return NpgsqlDataSource.Create(connectionString);
+});
+
+builder.Services.AddScoped<IDbConnection>(serviceProvider =>
+{
+    var dataSource = serviceProvider.GetRequiredService<NpgsqlDataSource>();
+    var connection = dataSource.CreateConnection();
     connection.Open();
     return connection;
 });
