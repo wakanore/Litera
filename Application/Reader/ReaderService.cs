@@ -34,7 +34,7 @@ namespace Application
             };
         }
 
-        public async Task<bool> UpdateReaderAsync(ReaderDto readerDto)
+        public Task<bool> UpdateReader(ReaderDto readerDto)
         {
             var reader = new Domain.Reader
             {
@@ -43,38 +43,23 @@ namespace Application
                 Phone = readerDto.Phone
             };
 
-            return await _readerRepository.Update(reader);
+            return _readerRepository.Update(reader);
         }
 
-        public async Task<bool> DeleteReaderAsync(int id)
+        public Task<bool> DeleteReader(int id)
         {
-            try
-            {
-                await _readerRepository.Delete(id);
-                return true;
-            }
-            catch (KeyNotFoundException)
-            {
-                return false;
-            }
-            catch (InvalidOperationException)
-            {
-                return false;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            return _readerRepository.Delete(id)
+                .ContinueWith(task =>
+                {
+                    if (task.IsFaulted)
+                        return false;
+                    return true;
+                });
         }
 
         public async Task<ReaderDto> GetReaderById(int id)
         {
             var readerEntity = await _readerRepository.GetById(id);
-
-            if (readerEntity == null)
-            {
-                return null;
-            }
 
             var readerDto = new ReaderDto
             {

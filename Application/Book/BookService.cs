@@ -33,49 +33,46 @@ namespace Application.Services
             };
         }
 
-        public async Task<bool> UpdateBookAsync(BookDto bookDto)
+        public Task<bool> UpdateBook(BookDto bookDto)
         {
-            var domainBook = new Domain.Book
+            var domainBook = new Book
             {
                 Id = bookDto.Id,
                 Name = bookDto.Name,
                 AuthorId = bookDto.Author.Id
             };
 
-            return await _bookRepository.Update(domainBook);
+            return _bookRepository.Update(domainBook);
         }
 
-        public async Task<bool> DeleteBookAsync(int id)
+        public Task<bool> DeleteBook(int id)
         {
-            try
-            {
-                await _bookRepository.Delete(id);
-                return true;
-            }
-            catch (KeyNotFoundException)
-            {
-                return false;
-            }
-            catch (InvalidOperationException)
-            {
-                return false;
-            }
+            return _bookRepository.Delete(id)
+                .ContinueWith(task =>
+                {
+                    if (task.IsFaulted) 
+                        return false;
+                    return true;
+                });
         }
 
-        public Task<Book> GetBookById(int id)
+        public async Task<Book> GetBookById(int id)
         {
-            var book = _bookRepository.GetById(id);
+            var book = await _bookRepository.GetById(id);
             return book;
         }
 
-        public async Task<IEnumerable<BookDto>> GetAllBooks()
+        public Task<IEnumerable<BookDto>> GetAllBooks()
+{
+    return _bookRepository.GetAll().ContinueWith(task => 
+    {
+        var books = task.Result;
+        return books.Select(book => new BookDto
         {
-            var books = await _bookRepository.GetAll();
-            return books.Select(book => new BookDto
-            {
-                Id = book.Id,
-                Name = book.Name
-            });
-        }
+            Id = book.Id,
+            Name = book.Name
+        });
+    });
+}
     }
 }

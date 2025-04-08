@@ -8,8 +8,8 @@ namespace Application
     public interface IBookService
     {
         Task<BookDto> AddBook(BookDto bookDto);
-        Task<bool> UpdateBookAsync(BookDto book);
-        Task<bool> DeleteBookAsync(int id);
+        Task<bool> UpdateBook(BookDto book);
+        Task<bool> DeleteBook(int id);
         Task<Book> GetBookById(int id);
         Task<IEnumerable<BookDto>> GetAllBooks();
     }

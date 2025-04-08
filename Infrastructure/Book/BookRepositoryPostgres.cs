@@ -64,17 +64,7 @@ namespace Infrastructure
 
         public async Task<IEnumerable<Book>> GetAll()
         {
-            var books = await _db.QueryAsync<Book>("SELECT * FROM Books ORDER BY Name");
-
-            var authors = await _db.QueryAsync<Author>("SELECT * FROM Authors WHERE Id IN (SELECT AuthorId FROM Books)");
-
-            var readers = await _db.QueryAsync<Reader>("SELECT * FROM Readers WHERE BookId IN (SELECT Id FROM Books)");
-
-            return books.Select(book =>
-            {
-                book.AuthorId = authors.FirstOrDefault(a => a.Id == book.AuthorId)?.Id ?? 0;
-                return book;
-            });
+            return await _db.QueryAsync<Book>("SELECT * FROM Books ORDER BY Name");
         }
     }
 }

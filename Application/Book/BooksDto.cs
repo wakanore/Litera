@@ -8,7 +8,7 @@ namespace Application
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public List<Reader> Readers { get; set; }
-        public Author Author { get; set; }
+        public List<ReaderDto> Readers { get; set; }
+        public AuthorDto Author { get; set; }
     }
 }

@@ -8,6 +8,10 @@ namespace API.Controllers
     public class FavouriteController : ControllerBase
     {
         private readonly IFavouriteService _favouriteService;
+        public FavouriteController(IFavouriteService favouriteService)
+        {
+            _favouriteService = favouriteService ?? throw new ArgumentNullException(nameof(favouriteService));
+        }
 
         [HttpDelete("{authorId}/{readerId}")]
         public async Task<IActionResult> Delete(int authorId, int readerId)

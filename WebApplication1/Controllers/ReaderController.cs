@@ -13,6 +13,10 @@ namespace API.Controllers
     public class ReaderController : ControllerBase
     {
         private readonly IReaderService _readerService;
+        public ReaderController(IReaderService readerService)
+        {
+            _readerService = readerService ?? throw new ArgumentNullException(nameof(readerService));
+        }
 
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
@@ -60,7 +64,7 @@ namespace API.Controllers
                     Phone = readerDto.Phone
                 };
 
-                bool isUpdated = await _readerService.UpdateReaderAsync(reader);
+                bool isUpdated = await _readerService.UpdateReader(reader);
 
                 return isUpdated ? NoContent() : NotFound();
             }
@@ -75,7 +79,7 @@ namespace API.Controllers
         {
             try
             {
-                var isDeleted = await _readerService.DeleteReaderAsync(id);
+                var isDeleted = await _readerService.DeleteReader(id);
                 return isDeleted ? NoContent() : NotFound();
             }
             catch (Exception ex)

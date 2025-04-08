@@ -13,6 +13,10 @@ namespace API.Controllers
     public class BookController : ControllerBase
     {
         private readonly IBookService _bookService;
+        public BookController(IBookService bookService)
+        {
+            _bookService = bookService ?? throw new ArgumentNullException(nameof(bookService));
+        }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
@@ -88,7 +92,7 @@ namespace API.Controllers
                     Name = bookDto.Name
                 };
 
-                var isUpdated = await _bookService.UpdateBookAsync(book);
+                var isUpdated = await _bookService.UpdateBook(book);
                 return isUpdated ? NoContent() : NotFound();
             }
             catch (Exception ex)
@@ -102,7 +106,7 @@ namespace API.Controllers
         {
             try
             {
-                var isDeleted = await _bookService.DeleteBookAsync(id);
+                var isDeleted = await _bookService.DeleteBook(id);
                 return isDeleted ? NoContent() : NotFound();
             }
             catch (Exception ex)

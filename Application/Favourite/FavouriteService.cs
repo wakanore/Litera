@@ -31,12 +31,11 @@ namespace Application
             return await _favouriteRepository.FavouriteExists(authorId, readerId);
         }
 
-        public async Task<bool> DeleteFavourite(int authorId, int readerId)
+        public Task<bool> DeleteFavourite(int authorId, int readerId)
         {
             try
             {
-                await _favouriteRepository.Delete(authorId, readerId);
-                return true;
+                return _favouriteRepository.Delete(authorId, readerId);
             }
             catch (Exception ex)
             {

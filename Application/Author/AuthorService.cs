@@ -21,30 +21,26 @@ namespace Application
             return addedAuthor;
         }
 
-        public async Task<bool> UpdateAuthorAsync(Author author)
+        public Task<bool> UpdateAuthor(Author author)
         {
-            try
-            {
-                await _authorRepository.Update(author);
-                return true;
-            }
-            catch (KeyNotFoundException)
-            {
-                return false;
-            }
+            return _authorRepository.Update(author)
+                .ContinueWith(task =>
+                {
+                    if (task.IsFaulted)
+                        return false;
+                    return true;
+                });
         }
 
-        public async Task<bool> DeleteAuthorAsync(int id)
+        public Task<bool> DeleteAuthor(int id)
         {
-            try
-            {
-                await _authorRepository.Delete(id);
-                return true;
-            }
-            catch (KeyNotFoundException)
-            {
-                return false;
-            }
+            return _authorRepository.Delete(id)
+                .ContinueWith(task =>
+                {
+                    if (task.IsFaulted)
+                        return false;
+                    return true;
+                });
         }
 
         public async Task<Author> GetAuthorById(int id)

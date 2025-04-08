@@ -11,6 +11,10 @@ namespace API.Controllers
     public class AuthorController : ControllerBase
     {
         private readonly IAuthorService _authorService;
+        public AuthorController(IAuthorService authorService)
+        {
+            _authorService = authorService ?? throw new ArgumentNullException(nameof(authorService));
+        }
 
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
@@ -58,7 +62,7 @@ namespace API.Controllers
                     Phone = authorDto.Phone
                 };
 
-                bool isUpdated = await _authorService.UpdateAuthorAsync(author);
+                bool isUpdated = await _authorService.UpdateAuthor(author);
 
                 return isUpdated ? NoContent() : NotFound();
             }
@@ -71,7 +75,7 @@ namespace API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            bool deleted = await _authorService.DeleteAuthorAsync(id);
+            bool deleted = await _authorService.DeleteAuthor(id);
 
             return deleted
                 ? NoContent()
