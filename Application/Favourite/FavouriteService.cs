@@ -18,13 +18,21 @@ namespace Application
 
         public async Task<bool> AddFavourite(FavouriteDto favouriteDto)
         {
-            var favourite = new Favourite
+            try
             {
-                AuthorId = favouriteDto.AuthorId,
-                ReaderId = favouriteDto.ReaderId
-            };
-            await _favouriteRepository.Add(favourite);
-            return true;
+                var favourite = new Favourite
+                {
+                    AuthorId = favouriteDto.AuthorId,
+                    ReaderId = favouriteDto.ReaderId
+                };
+
+                await _favouriteRepository.Add(favourite);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
         public async Task<bool> FavouriteExists(int authorId, int readerId)
         {

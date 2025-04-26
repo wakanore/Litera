@@ -10,7 +10,7 @@ namespace Application
         Task<BookDto> AddBook(BookDto bookDto);
         Task<bool> UpdateBook(BookDto book);
         Task<bool> DeleteBook(int id);
-        Task<Book> GetBookById(int id);
+        Task<BookDto> GetBookById(int id);
         Task<IEnumerable<BookDto>> GetAllBooks();
     }
 }

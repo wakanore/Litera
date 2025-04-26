@@ -15,38 +15,52 @@ namespace Application
             _authorRepository = authorRepository;
         }
 
-        public async Task<Author> AddAuthor(Author author)
+        public async Task<AuthorDto> AddAuthor(Author author)
         {
             var addedAuthor = await _authorRepository.Add(author);
-            return addedAuthor;
+
+            return new AuthorDto
+            {
+                Id = addedAuthor.Id,
+                Name = addedAuthor.Name
+            };
         }
 
-        public Task<bool> UpdateAuthor(Author author)
+        public async Task<bool> UpdateAuthor(Author author)
         {
-            return _authorRepository.Update(author)
-                .ContinueWith(task =>
-                {
-                    if (task.IsFaulted)
-                        return false;
-                    return true;
-                });
+            try
+            {
+                await _authorRepository.Update(author);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
-        public Task<bool> DeleteAuthor(int id)
+        public async Task<bool> DeleteAuthor(int id)
         {
-            return _authorRepository.Delete(id)
-                .ContinueWith(task =>
-                {
-                    if (task.IsFaulted)
-                        return false;
-                    return true;
-                });
+            try
+            {
+                await _authorRepository.Delete(id);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
-        public async Task<Author> GetAuthorById(int id)
+        public async Task<AuthorDto> GetAuthorById(int id)
         {
             var author = await _authorRepository.GetById(id);
-            return author;
+
+            return new AuthorDto
+            {
+                Id = author.Id,
+                Name = author.Name
+            };
         }
 
         public async Task<IEnumerable<Author>> GetAllAuthors()

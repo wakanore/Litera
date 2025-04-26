@@ -46,15 +46,17 @@ namespace Application
             return _readerRepository.Update(reader);
         }
 
-        public Task<bool> DeleteReader(int id)
+        public async Task<bool> DeleteReader(int id)
         {
-            return _readerRepository.Delete(id)
-                .ContinueWith(task =>
-                {
-                    if (task.IsFaulted)
-                        return false;
-                    return true;
-                });
+            try
+            {
+                await _readerRepository.Delete(id);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public async Task<ReaderDto> GetReaderById(int id)

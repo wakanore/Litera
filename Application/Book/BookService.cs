@@ -56,23 +56,32 @@ namespace Application.Services
                 });
         }
 
-        public async Task<Book> GetBookById(int id)
+        public async Task<BookDto> GetBookById(int id)
         {
             var book = await _bookRepository.GetById(id);
-            return book;
+
+            return new BookDto
+            {
+                Id = book.Id,
+                Name = book.Name
+            };
         }
 
-        public Task<IEnumerable<BookDto>> GetAllBooks()
-{
-    return _bookRepository.GetAll().ContinueWith(task => 
-    {
-        var books = task.Result;
-        return books.Select(book => new BookDto
+        public async Task<IEnumerable<BookDto>> GetAllBooks()
         {
-            Id = book.Id,
-            Name = book.Name
-        });
-    });
-}
+            try
+            {
+                var books = await _bookRepository.GetAll();
+                return books.Select(book => new BookDto
+                {
+                    Id = book.Id,
+                    Name = book.Name
+                });
+            }
+            catch
+            {
+                return Enumerable.Empty<BookDto>();
+            }
+        }
     }
 }
