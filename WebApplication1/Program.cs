@@ -1,0 +1,80 @@
+using Application;
+using Application.Services;
+using FluentValidation;
+using Infrastructure;
+using Npgsql;
+using System.Data;
+using Application.Exceptions;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+
+builder.Services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+
+// Registration repositories
+builder.Services.AddScoped<IAuthorRepository, AuthorPostgresRepository>();
+builder.Services.AddScoped<IBookRepository, BookPostgresRepository>();
+builder.Services.AddScoped<IReaderRepository, ReaderPostgresRepository>();
+builder.Services.AddScoped<IFavouriteRepository, FavouritePostgresRepository>();
+
+// Registration service
+builder.Services.AddScoped<IBookService, BookService>();
+builder.Services.AddScoped<IAuthorService, AuthorService>();
+builder.Services.AddScoped<IReaderService, ReaderService>();
+builder.Services.AddScoped<IFavouriteService, FavouriteService>();
+
+builder.Services.AddScoped<IValidator<CreateAuthorRequest>, AuthorValidator>();
+builder.Services.AddScoped<IValidator<CreateBookRequest>, BookValidator>();
+builder.Services.AddScoped<IValidator<CreateReaderRequest>, ReaderValidator>();
+
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<GlobalExceptionFilter>();
+});
+builder.Services.AddProblemDetails();
+
+builder.Services.AddSingleton<NpgsqlDataSource>(serviceProvider =>
+{
+    var connectionString = builder.Configuration.GetConnectionString("PostgreSQL");
+    return NpgsqlDataSource.Create(connectionString);
+});
+
+builder.Services.AddScoped<IDbConnection>(serviceProvider =>
+{
+    var dataSource = serviceProvider.GetRequiredService<NpgsqlDataSource>();
+    var connection = dataSource.CreateConnection();
+    connection.Open();
+    return connection;
+});
+
+builder.Services.AddScoped<AppDbContext>();
+
+
+
+builder.Services.AddControllers();
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseExceptionHandler();
+
+app.UseHttpsRedirection();
+
+app.UseAuthorization();
+
+app.MapControllers();
+
+app.Run();
+
+
