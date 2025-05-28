@@ -1,18 +1,13 @@
-﻿using Application;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 public sealed record CreateReaderRequest(
-    [property: Required] int Id,
-    [property: Required] string Name,
-    [property: Required] string Phone,
-    [property: Required] List<CreateBookRequest> Books,
-    [property: Required] string Description
+    [Required] int Id,
+    [Required, MaxLength(30)] string Name,
+    [Required, MaxLength(15)] string Phone
 );
 
 public sealed record UpdateReaderRequest(
-    [property: Required] int Id,
-    [property: Required] string Name,
-    [property: Required] string Phone,
-    [property: Required] List<UpdateBookRequest> Books,
-    [property: Required] string Description
+    [Required] int Id,
+    [Required, MaxLength(30)] string Name,
+    [Required, MaxLength(15)] string Phone
 );

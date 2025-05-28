@@ -19,8 +19,8 @@ namespace Infrastructure
         public async Task<Book> Add(Book book)
         {
             const string sql = @"
-                INSERT INTO Books (Name, Style, AuthorId, CreatedDate, LinkToCover)
-                VALUES (@Name, @Style, @AuthorId, @CreatedDate, @LinkToCover)
+                INSERT INTO Books (Id, Name, Style, AuthorId, CreatedDate, LinkToCover)
+                VALUES (@Id, @Name, @Style, @AuthorId, @CreatedDate, @LinkToCover)
                 RETURNING Id, Name, Style, AuthorId, CreatedDate, LinkToCover;";
 
             return await _db.QuerySingleAsync<Book>(sql, book);

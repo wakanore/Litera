@@ -5,13 +5,13 @@ namespace Domain
 {
     public class Favourite
     {
-        public Favourite(int authorId, int readerId)
+        public Favourite(int userId, int bookId)
         {
-            AuthorId = authorId;
-            ReaderId = readerId;
+            UserId = userId;
+            BookId = bookId;
         }
 
-        public int AuthorId { get; set; }
-        public int ReaderId { get; set; }
+        public int UserId { get; set; }
+        public int BookId { get; set; }
     }
 }

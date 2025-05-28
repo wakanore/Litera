@@ -20,13 +20,11 @@ namespace Application
         {
             try
             {
-                // 1. Create domain entity from DTO using proper constructor
                 var favourite = new Favourite(
-                    AuthorId: favouriteDto.AuthorId,
-                    readerId: favouriteDto.ReaderId
+                    userId: favouriteDto.UserId,
+                    bookId: favouriteDto.BookId
                 );
 
-                // 2. Pass the domain entity to repository
                 await _favouriteRepository.Add(favourite);
                 return true;
             }

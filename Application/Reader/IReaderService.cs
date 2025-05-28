@@ -7,7 +7,7 @@ namespace Application
 {
     public interface IReaderService
     {
-        Task<CreateReaderRequest> AddReader(CreateReaderRequest reader);
+        Task<CreateReaderRequest> AddReader(Reader reader);
         Task<bool> UpdateReader(CreateReaderRequest reader);
         Task<bool> DeleteReader(int id);
         Task<CreateReaderRequest> GetReaderById(int id);

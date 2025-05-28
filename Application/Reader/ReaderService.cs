@@ -17,10 +17,11 @@ namespace Application
             _readerRepository = readerRepository;
         }
 
-        public async Task<CreateReaderRequest> AddReader(CreateReaderRequest readerDto)
+        public async Task<CreateReaderRequest> AddReader(Reader readerDto)
         {
             var readerEntity = new Reader
             {
+                Id = readerDto.Id,
                 Name = readerDto.Name,
                 Phone = readerDto.Phone,
             };
@@ -30,9 +31,7 @@ namespace Application
             return new CreateReaderRequest(
                 addedReader.Id,
                 addedReader.Name,
-                addedReader.Phone,
-                new List<CreateBookRequest>(),
-                "" 
+                addedReader.Phone
             );
         }
 
@@ -68,9 +67,7 @@ namespace Application
             var readerDto = new CreateReaderRequest(
                     Id: readerEntity.Id,
                     Name: readerEntity.Name,
-                    Phone: readerEntity.Phone,
-                    Books: new List<CreateBookRequest>(),
-                    Description: ""
+                    Phone: readerEntity.Phone
                 );
 
             return readerDto;
@@ -84,9 +81,7 @@ namespace Application
                 return readers.Select(reader => new CreateReaderRequest(
                     Id: reader.Id,
                     Name: reader.Name,
-                    Phone: reader.Phone,
-                    Books: new List<CreateBookRequest>(), 
-                    Description: "" 
+                    Phone: reader.Phone 
                 ));
 
             }

@@ -19,8 +19,8 @@ namespace Infrastructure
         public async Task<Author> Add(Author author)
         {
             const string sql = @"
-                INSERT INTO Authors (Name, Description, Phone)
-                VALUES (@Name, @Description, @Phone)
+                INSERT INTO Users (Id, Name, Description, Phone)
+                VALUES (@Id, @Name, @Description, @Phone)
                 RETURNING Id, Name, Description, Phone;";
 
             var insertedAuthor = await _db.QuerySingleAsync<Author>(sql, author);
@@ -30,7 +30,7 @@ namespace Infrastructure
         public async Task Update(Author author)
         {
             const string sql = @"
-                UPDATE Authors 
+                UPDATE Users 
                 SET Name = @Name, 
                     Description = @Description,
                     Phone = @Phone
@@ -45,7 +45,7 @@ namespace Infrastructure
 
         public async Task Delete(int id)
         {
-            const string sql = "DELETE FROM Authors WHERE Id = @Id;";
+            const string sql = "DELETE FROM Users WHERE Id = @Id;";
 
             var affectedRows = await _db.ExecuteAsync(sql, new { Id = id });
             if (affectedRows == 0)
@@ -56,7 +56,7 @@ namespace Infrastructure
 
         public async Task<Author> GetById(int id)
         {
-            const string sql = "SELECT id, name, phone, description FROM Authors WHERE Id = @Id;";
+            const string sql = "SELECT id, name, phone, description FROM Users WHERE Id = @Id;";
 
             var author = await _db.QuerySingleOrDefaultAsync<Author>(sql, new { Id = id });
             if (author == null)
@@ -69,7 +69,7 @@ namespace Infrastructure
 
         public async Task<IEnumerable<Author>> GetAll()
         {
-            const string sql = "SELECT id, name, phone, description FROM Authors ORDER BY Name;";
+            const string sql = "SELECT id, name, phone, description FROM Users ORDER BY Name;";
             return await _db.QueryAsync<Author>(sql);
         }
     }

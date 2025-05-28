@@ -5,8 +5,8 @@ using System;
 using System.Threading.Tasks;
 using Infrastructure;
 using Application.Services;
-using Azure.Core;
 using FluentValidation;
+using System.Collections.Generic;
 
 namespace API.Controllers
 {
@@ -15,15 +15,12 @@ namespace API.Controllers
     public class BookController : ControllerBase
     {
         private readonly IBookService _bookService;
-        public BookController(IBookService bookService)
-        {
-            _bookService = bookService ?? throw new ArgumentNullException(nameof(bookService));
-        }
         private readonly IValidator<CreateBookRequest> _validator;
 
-        public BookController(IValidator<CreateBookRequest> validator)
+        public BookController(IBookService bookService, IValidator<CreateBookRequest> validator)
         {
-            _validator = validator;
+            _bookService = bookService ?? throw new ArgumentNullException(nameof(bookService));
+            _validator = validator ?? throw new ArgumentNullException(nameof(validator));
         }
 
         [HttpGet("{id}")]
@@ -68,27 +65,14 @@ namespace API.Controllers
                 {
                     return BadRequest(validationResult.Errors);
                 }
-                var book = new CreateBookRequest(
-                    bookDto.Id,
-                    bookDto.Name,
-                    bookDto.Readers ?? new List<CreateReaderRequest>(),
-                    new CreateAuthorRequest(
-                        bookDto.Author.Id,
-                        bookDto.Author.Name,
-                        bookDto.Author.Phone
-                    )
-                );
-
-                var createdBook = await _bookService.AddBook(book);
-
-                var resultDto = new CreateBookRequest(
-                    createdBook.Id,
-                    createdBook.Name,
-                    createdBook.Readers ?? new List<CreateReaderRequest>(),
-                    createdBook.Author ?? new CreateAuthorRequest(0, "", "")
-                );
-
-                return CreatedAtAction(nameof(GetById), new { id = resultDto.Id }, resultDto);
+                var createdBook = new Book
+                {
+                    Id = bookDto.Id,
+                    Name = bookDto.Name,
+                    AuthorId = bookDto.AuthorId
+                };
+                var result = await _bookService.AddBook(createdBook);
+                return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
             }
             catch (Exception ex)
             {
@@ -99,30 +83,20 @@ namespace API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] CreateBookRequest bookDto)
         {
-            var validationResult = await _validator.ValidateAsync(bookDto);
-            if (!validationResult.IsValid)
-            {
-                return BadRequest(validationResult.Errors);
-            }
             try
             {
+                var validationResult = await _validator.ValidateAsync(bookDto);
+                if (!validationResult.IsValid)
+                {
+                    return BadRequest(validationResult.Errors);
+                }
+
                 if (id != bookDto.Id)
                 {
                     return BadRequest("ID in URL does not match ID in body");
                 }
 
-                var book = new CreateBookRequest(
-                    Id: bookDto.Id,
-                    Name: bookDto.Name,
-                    Readers: new List<CreateReaderRequest>(), // или bookDto.Readers, если есть
-                    Author: new CreateAuthorRequest( // или bookDto.Author, если есть
-                        bookDto.Author.Id,
-                        bookDto.Author.Name,
-                        bookDto.Author.Phone
-                    )
-                );
-
-                var isUpdated = await _bookService.UpdateBook(book);
+                var isUpdated = await _bookService.UpdateBook(bookDto);
                 return isUpdated ? NoContent() : NotFound();
             }
             catch (Exception ex)

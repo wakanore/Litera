@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using Application;
 using Domain;
 using Infrastructure;
 
@@ -16,12 +16,13 @@ namespace Application.Services
             _bookRepository = bookRepository;
         }
 
-        public async Task<CreateBookRequest> AddBook(CreateBookRequest bookDto)
+        public async Task<CreateBookRequest> AddBook(Book bookDto)
         {
             var domainBook = new Book
             {
+                Id = bookDto.Id,
                 Name = bookDto.Name,
-                AuthorId = bookDto.Author.Id
+                AuthorId = bookDto.AuthorId
             };
 
             var addedBook = await _bookRepository.Add(domainBook);
@@ -29,12 +30,8 @@ namespace Application.Services
             return new CreateBookRequest(
                 Id: addedBook.Id,
                 Name: addedBook.Name,
-                Readers: new List<CreateReaderRequest>(),
-                Author: new CreateAuthorRequest(
-                    Id: 0, // or appropriate default value
-                    Name: "", // or appropriate default value
-                    Phone: "" // or appropriate default value
-                )
+                Style: addedBook.Style,
+                AuthorId: addedBook.AuthorId
             );
         }
 
@@ -44,7 +41,7 @@ namespace Application.Services
             {
                 Id = bookDto.Id,
                 Name = bookDto.Name,
-                AuthorId = bookDto.Author.Id
+                AuthorId = bookDto.AuthorId
             };
 
             return _bookRepository.Update(domainBook);
@@ -55,7 +52,7 @@ namespace Application.Services
             return _bookRepository.Delete(id)
                 .ContinueWith(task =>
                 {
-                    if (task.IsFaulted) 
+                    if (task.IsFaulted)
                         return false;
                     return true;
                 });
@@ -68,8 +65,8 @@ namespace Application.Services
             return new CreateBookRequest(
                 book.Id,
                 book.Name,
-                new List<CreateReaderRequest>(),
-                new CreateAuthorRequest(0, "", "")  // Provide required author params
+                book.Style,
+                book.AuthorId
             );
         }
 
@@ -81,8 +78,8 @@ namespace Application.Services
                 return books.Select(book => new CreateBookRequest(
                     book.Id,
                     book.Name,
-                    new List<CreateReaderRequest>(),
-                    new CreateAuthorRequest(0, "", "")  // Default values
+                    book.Style,
+                    book.AuthorId
                 ));
             }
             catch

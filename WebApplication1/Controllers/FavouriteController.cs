@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Application;
-using Azure.Core;
 using FluentValidation;
+using FluentValidation.Results;
 
 namespace API.Controllers
 {
@@ -10,57 +10,70 @@ namespace API.Controllers
     public class FavouriteController : ControllerBase
     {
         private readonly IFavouriteService _favouriteService;
-        public FavouriteController(IFavouriteService favouriteService)
-        {
-            _favouriteService = favouriteService ?? throw new ArgumentNullException(nameof(favouriteService));
-        }
         private readonly IValidator<CreateFavouriteRequest> _validator;
 
-        public FavouriteController(IValidator<CreateFavouriteRequest> validator)
+        public FavouriteController(
+            IFavouriteService favouriteService,
+            IValidator<CreateFavouriteRequest> validator)
         {
-            _validator = validator;
+            _favouriteService = favouriteService ?? throw new ArgumentNullException(nameof(favouriteService));
+            _validator = validator ?? throw new ArgumentNullException(nameof(validator));
         }
 
-        [HttpDelete("{authorId}/{readerId}")]
-        public async Task<IActionResult> Delete(int authorId, int readerId)
+        [HttpDelete("{UserId}/{BookId}")]
+        public async Task<IActionResult> Delete(int UserId, int BookId)
         {
             try
             {
-                bool isDeleted = await _favouriteService.DeleteFavourite(authorId, readerId);
+                bool isDeleted = await _favouriteService.DeleteFavourite(UserId, BookId);
                 return isDeleted ? NoContent() : NotFound();
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                return StatusCode(500, new { error = $"Internal server error: {ex.Message}" });
             }
         }
+
         [HttpPost]
         public async Task<IActionResult> Add([FromBody] CreateFavouriteRequest favouriteDto)
         {
             try
             {
-                var validationResult = await _validator.ValidateAsync(favouriteDto);
+                // Validation
+                ValidationResult validationResult = await _validator.ValidateAsync(favouriteDto);
                 if (!validationResult.IsValid)
                 {
-                    return BadRequest(validationResult.Errors);
+                    return BadRequest(new
+                    {
+                        errors = validationResult.Errors.Select(e => new {
+                            property = e.PropertyName,
+                            message = e.ErrorMessage
+                        })
+                    });
                 }
-                bool alreadyExists = await _favouriteService.FavouriteExists(favouriteDto.AuthorId, favouriteDto.ReaderId);
+
+                // Check if favorite already exists
+                bool alreadyExists = await _favouriteService.FavouriteExists(
+                    favouriteDto.UserId,
+                    favouriteDto.BookId);
+
                 if (alreadyExists)
                 {
-                    return Conflict("This favorite already exists");
+                    return Conflict(new { error = "This favorite already exists" });
                 }
 
                 bool isAdded = await _favouriteService.AddFavourite(favouriteDto);
 
-                return CreatedAtRoute(new
+
+                return CreatedAtAction(nameof(Add), new
                 {
-                    authorId = favouriteDto.AuthorId,
-                    readerId = favouriteDto.ReaderId
-                }, null);
+                    authorId = favouriteDto.UserId,
+                    readerId = favouriteDto.BookId
+                });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                return StatusCode(500, new { error = $"Internal server error: {ex.Message}" });
             }
         }
     }

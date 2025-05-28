@@ -19,8 +19,8 @@ namespace Infrastructure
         public async Task<Favourite> Add(Favourite favourite)
         {
             const string sql = @"
-        INSERT INTO Favourites (AuthorId, ReaderId)
-        VALUES (@AuthorId, @ReaderId)
+        INSERT INTO Favourites (UserId, BookId)
+        VALUES (@UserId, @BookId)
         RETURNING *;"; 
 
             return await _db.QuerySingleAsync<Favourite>(sql, favourite);
@@ -28,13 +28,13 @@ namespace Infrastructure
 
         public async Task<bool> FavouriteExists(int authorId, int readerId)
         {
-            const string sql = "SELECT 1 FROM Favourites WHERE AuthorId = @AuthorId AND ReaderId = @ReaderId";
+            const string sql = "SELECT 1 FROM Favourites WHERE UserId = @UserId AND BookId = @BookId";
             return await _db.ExecuteScalarAsync<bool>(sql, new { AuthorId = authorId, ReaderId = readerId });
         }
 
         public async Task<bool> Delete(int authorId, int readerId)
         {
-            const string sql = "DELETE FROM Favourites WHERE AuthorId = @AuthorId AND ReaderId = @ReaderId";
+            const string sql = "DELETE FROM Favourites WHERE UserId = @UserId AND BookId = @BookId";
             var rowsAffected = await _db.ExecuteAsync(sql, new { AuthorId = authorId, ReaderId = readerId });
             return rowsAffected > 0;
         }

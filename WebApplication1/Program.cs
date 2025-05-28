@@ -5,6 +5,8 @@ using Infrastructure;
 using Npgsql;
 using System.Data;
 using Application.Exceptions;
+using Microsoft.EntityFrameworkCore;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +33,9 @@ builder.Services.AddScoped<IFavouriteService, FavouriteService>();
 builder.Services.AddScoped<IValidator<CreateAuthorRequest>, AuthorValidator>();
 builder.Services.AddScoped<IValidator<CreateBookRequest>, BookValidator>();
 builder.Services.AddScoped<IValidator<CreateReaderRequest>, ReaderValidator>();
+builder.Services.AddScoped<IValidator<CreateFavouriteRequest>, CreateFavouriteRequestValidator>();
+
+builder.Services.AddScoped<AuthorService>();
 
 builder.Services.AddControllers(options =>
 {
@@ -53,6 +58,10 @@ builder.Services.AddScoped<IDbConnection>(serviceProvider =>
 });
 
 builder.Services.AddScoped<AppDbContext>();
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(connectionString));
 
 
 
