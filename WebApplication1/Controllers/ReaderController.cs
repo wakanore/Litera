@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
 using Domain;
+using Application.Services;
 
 namespace API.Controllers
 {
@@ -13,15 +14,12 @@ namespace API.Controllers
     public class ReaderController : ControllerBase
     {
         private readonly IReaderService _readerService;
-        private readonly IValidator<CreateReaderRequest> _validator;
 
-        // Единственный конструктор, объединяющий обе зависимости
         public ReaderController(
             IReaderService readerService,
             IValidator<CreateReaderRequest> validator)
         {
             _readerService = readerService ?? throw new ArgumentNullException(nameof(readerService));
-            _validator = validator ?? throw new ArgumentNullException(nameof(validator));
         }
 
         [HttpGet("{id}")]
@@ -41,88 +39,30 @@ namespace API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            try
-            {
-                var result = await _readerService.GetAllReaders();
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+            var readers = await _readerService.GetAllReaders();
+            return Ok(readers);
         }
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateReaderRequest readerDto)
         {
-            try
-            {
-                var validationResult = await _validator.ValidateAsync(readerDto);
-                if (!validationResult.IsValid)
-                {
-                    return BadRequest(validationResult.Errors);
-                }
-
-                var reader = new Reader
-                {
-                    Id = readerDto.Id,
-                    Name = readerDto.Name,
-                    Phone = readerDto.Phone
-                };
-
-
-                var result = await _readerService.AddReader(reader);
-                return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+            var result = await _readerService.CreateReader(readerDto);
+            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] CreateReaderRequest readerDto)
+        public async Task<IActionResult> Update(int id, [FromBody] UpdateReaderRequest readerDto)
         {
-            try
-            {
-                var validationResult = await _validator.ValidateAsync(readerDto);
-                if (!validationResult.IsValid)
-                {
-                    return BadRequest(validationResult.Errors);
-                }
-
-                if (id != readerDto.Id)
-                {
-                    return BadRequest("ID in URL does not match ID in body");
-                }
-
-                var reader = new CreateReaderRequest(
-                    readerDto.Id,
-                    readerDto.Name,
-                    readerDto.Phone
-                );
-
-                bool isUpdated = await _readerService.UpdateReader(reader);
-                return isUpdated ? NoContent() : NotFound();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+            await _readerService.UpdateReader(readerDto);
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            try
-            {
-                var isDeleted = await _readerService.DeleteReader(id);
-                return isDeleted ? NoContent() : NotFound();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+            return await _readerService.DeleteReader(id)
+               ? NoContent()
+               : NotFound($"Author with id {id} not found");
         }
     }
 }

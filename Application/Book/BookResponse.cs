@@ -1,4 +1,6 @@
 ﻿public record BookResponse(
-    Guid Id,
-    string Name
+    int Id,
+    string Name,
+    string Style,
+    int AuthorId
 );

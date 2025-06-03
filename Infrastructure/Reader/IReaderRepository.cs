@@ -8,7 +8,7 @@ namespace Infrastructure
     {
         Task<Reader> Add(Reader reader);
         Task<bool> Update(Reader reader);
-        Task Delete(int id);
+        Task<bool> Delete(int id);
         Task<Reader> GetById(int id);
         Task<IEnumerable<Reader>> GetAll();
     }

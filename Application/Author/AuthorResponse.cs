@@ -1,5 +1,5 @@
 ﻿public record AuthorResponse(
-    Guid Id,
+    int Id,
     string Name,
     string Phone
 );

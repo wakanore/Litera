@@ -40,7 +40,7 @@ namespace Infrastructure
             return affectedRows > 0;
         }
 
-        public async Task Delete(int id)
+        public async Task<bool> Delete(int id)
         {
             const string sql = "DELETE FROM Users WHERE Id = @Id;";
 
@@ -49,6 +49,7 @@ namespace Infrastructure
             {
                 throw new InvalidOperationException("Reader not found.");
             }
+            return true;
         }
 
         public async Task<Reader> GetById(int id)
@@ -67,24 +68,6 @@ namespace Infrastructure
         {
             const string sql = "SELECT id, name, phone FROM Users ORDER BY Name";
             return await _db.QueryAsync<Reader>(sql);
-        }
-
-        public async Task InitializeData()
-        {
-            var count = await _db.ExecuteScalarAsync<int>("SELECT COUNT(*) FROM Users;");
-            if (count > 0) return;
-
-            var initialReaders = new List<Reader>
-            {
-                new Reader { Name = "Иван Иванов", Phone = "+79111234567", Description = "Активный читатель" },
-                new Reader { Name = "Петр Петров", Phone = "+79217654321", Description = "Любит классику" },
-                new Reader { Name = "Мария Сидорова", Phone = "+79316543278", Description = "Предпочитает современную литературу" }
-            };
-
-            foreach (var reader in initialReaders)
-            {
-                await Add(reader);
-            }
         }
     }
 }

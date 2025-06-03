@@ -4,8 +4,8 @@ namespace Application.Exceptions
 {
     public class BaseApplicationException : Exception
     {
-        public int StatusCode { get; }  // HTTP-статус (400, 404, 500)
-        public string Title { get; }    // Краткое описание ошибки
+        public int StatusCode { get; }  
+        public string Title { get; }    
 
         public BaseApplicationException(
             string message,

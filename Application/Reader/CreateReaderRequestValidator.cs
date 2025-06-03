@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-public class ReaderValidator : AbstractValidator<CreateReaderRequest>
+public class CreateReaderRequestValidator : AbstractValidator<CreateReaderRequest>
 {
-    public ReaderValidator()
+    public CreateReaderRequestValidator()
     {
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("Имя читателя обязательно")

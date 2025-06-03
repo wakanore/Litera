@@ -1,34 +1,15 @@
 ﻿using FluentMigrator.Runner;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 
-public interface IMigrationService
+public class MigrationService
 {
-    void ApplyMigrations();
-    void RollbackMigration(long version);
-}
+    private readonly IMigrationRunner _runner;
 
-public class MigrationService : IMigrationService
-{
-    private readonly IServiceProvider _serviceProvider;
-
-    public MigrationService(IServiceProvider serviceProvider)
+    public MigrationService(IMigrationRunner runner)
     {
-        _serviceProvider = serviceProvider;
+        _runner = runner;
     }
 
-    public void ApplyMigrations()
-    {
-        using var scope = _serviceProvider.CreateScope();
-        var runner = scope.ServiceProvider.GetRequiredService<IMigrationRunner>();
-        runner.MigrateUp();
-    }
-
-    public void RollbackMigration(long version)
-    {
-        using var scope = _serviceProvider.CreateScope();
-        var runner = scope.ServiceProvider.GetRequiredService<IMigrationRunner>();
-        runner.MigrateDown(version);
-    }
+    public void ApplyMigrations() => _runner.MigrateUp();
+    public void RollbackMigration(long version) => _runner.MigrateDown(version);
 }

@@ -6,70 +6,55 @@ using Npgsql;
 using System.Data;
 using Application.Exceptions;
 using Microsoft.EntityFrameworkCore;
-using Npgsql.EntityFrameworkCore.PostgreSQL;
+using FluentValidation.AspNetCore;
+using Domain;
+using Application.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddControllers()
+    .AddFluentValidation(fv =>
+    {
+        fv.RegisterValidatorsFromAssemblyContaining<CreateBookRequestValidator>();
+        fv.AutomaticValidationEnabled = true;
+        fv.ImplicitlyValidateChildProperties = true;
+    });
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+var connectionString = builder.Configuration.GetConnectionString("PostgreSQL");
+builder.Services.AddSingleton<NpgsqlDataSource>(_ => NpgsqlDataSource.Create(connectionString));
+builder.Services.AddScoped<IDbConnection>(sp =>
+{
+    var connection = sp.GetRequiredService<NpgsqlDataSource>().CreateConnection();
+    connection.Open();
+    return connection;
+});
 
-// Registration repositories
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(connectionString));
+
 builder.Services.AddScoped<IAuthorRepository, AuthorPostgresRepository>();
 builder.Services.AddScoped<IBookRepository, BookPostgresRepository>();
 builder.Services.AddScoped<IReaderRepository, ReaderPostgresRepository>();
 builder.Services.AddScoped<IFavouriteRepository, FavouritePostgresRepository>();
 
-// Registration service
 builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IAuthorService, AuthorService>();
 builder.Services.AddScoped<IReaderService, ReaderService>();
 builder.Services.AddScoped<IFavouriteService, FavouriteService>();
 
-builder.Services.AddScoped<IValidator<CreateAuthorRequest>, AuthorValidator>();
-builder.Services.AddScoped<IValidator<CreateBookRequest>, BookValidator>();
-builder.Services.AddScoped<IValidator<CreateReaderRequest>, ReaderValidator>();
-builder.Services.AddScoped<IValidator<CreateFavouriteRequest>, CreateFavouriteRequestValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateBookRequestValidator>();
+builder.Services.AddScoped<IValidator<UpdateAuthorRequest>, UpdateAuthorRequestValidator>();
+builder.Services.AddScoped<IValidator<UpdateReaderRequest>, UpdateReaderRequestValidator>();
 
-builder.Services.AddScoped<AuthorService>();
-
-builder.Services.AddControllers(options =>
-{
-    options.Filters.Add<GlobalExceptionFilter>();
-});
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
-
-builder.Services.AddSingleton<NpgsqlDataSource>(serviceProvider =>
-{
-    var connectionString = builder.Configuration.GetConnectionString("PostgreSQL");
-    return NpgsqlDataSource.Create(connectionString);
-});
-
-builder.Services.AddScoped<IDbConnection>(serviceProvider =>
-{
-    var dataSource = serviceProvider.GetRequiredService<NpgsqlDataSource>();
-    var connection = dataSource.CreateConnection();
-    connection.Open();
-    return connection;
-});
-
-builder.Services.AddScoped<AppDbContext>();
-
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(connectionString));
-
-
-
-builder.Services.AddControllers();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -77,13 +62,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseExceptionHandler();
-
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();
+
 
 

@@ -2,11 +2,8 @@
 {
     public class NotFoundException : BaseApplicationException
     {
-        public NotFoundException(string entityName, object key)
-            : base(
-                $"Сущность '{entityName}' с идентификатором '{key}' не найдена.",
-                404,
-                "Not Found")
+        public NotFoundException(string message)
+            : base(message)
         { }
     }
 }

@@ -45,11 +45,7 @@ public class AppDbContext : DbContext, IDisposable
             };
         }
     }
-
-    // DbSet для работы через EF Core
     public DbSet<Author> Authors { get; set; }
-
-    // Методы для EF Core
     public IEnumerable<Author> GetAuthors() => Authors.ToList();
 
     public void AddAuthor(Author author)

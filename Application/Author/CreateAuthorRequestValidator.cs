@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-public class AuthorValidator : AbstractValidator<CreateAuthorRequest>
+public class CreateAuthorRequestValidator : AbstractValidator<CreateAuthorRequest>
 {
-    public AuthorValidator()
+    public CreateAuthorRequestValidator()
     {
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("Имя автора обязательно")

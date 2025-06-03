@@ -7,10 +7,10 @@ namespace Application
 {
     public interface IBookService
     {
-        Task<CreateBookRequest> AddBook(Book bookDto);
-        Task<bool> UpdateBook(CreateBookRequest book);
+        Task<BookResponse> CreateBook(CreateBookRequest request);
+        Task<BookResponse> UpdateBook(UpdateBookRequest request);
         Task<bool> DeleteBook(int id);
-        Task<CreateBookRequest> GetBookById(int id);
-        Task<IEnumerable<CreateBookRequest>> GetAllBooks();
+        Task<BookResponse> GetBookById(int id);
+        Task<IEnumerable<BookResponse>> GetAllBooks();
     }
 }

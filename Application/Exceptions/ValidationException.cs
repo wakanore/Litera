@@ -4,7 +4,7 @@ namespace Application.Exceptions
 {
     public class ValidationException : BaseApplicationException
     {
-        public List<string> Errors { get; }  // Список ошибок
+        public List<string> Errors { get; }  
 
         public ValidationException(List<ValidationFailure> failures)
             : base("Ошибка валидации", 400, "Validation Error")
