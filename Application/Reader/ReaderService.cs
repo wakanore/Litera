@@ -1,9 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Infrastructure;
+using Domain;
 
 namespace Application
 {
@@ -11,22 +10,30 @@ namespace Application
     {
         private readonly IReaderRepository _readerRepository;
 
-        public ReaderService(IReaderRepository ReaderRepository)
+        public ReaderService(IReaderRepository readerRepository)
         {
-            _readerRepository = ReaderRepository;
+            _readerRepository = readerRepository;
         }
 
-
-        public void AddReader(ReaderDto ReaderDto)
+        public ReaderDto AddReader(ReaderDto readerDto)
         {
-            var Reader = new Domain.Reader
+            var reader = new Reader
             {
-                Name = ReaderDto.Name,
-                Phone = ReaderDto.Phone
+                Name = readerDto.Name,
+                Phone = readerDto.Phone
             };
-            _readerRepository.Add(Reader);
+
+            var createdReader = _readerRepository.Add(reader);
+
+            return new ReaderDto
+            {
+                Id = createdReader.Id,
+                Name = createdReader.Name,
+                Phone = createdReader.Phone
+            };
         }
-        public void UpdateReader(ReaderDto readerDto)
+
+        public bool UpdateReader(ReaderDto readerDto)
         {
             if (readerDto == null)
             {
@@ -41,11 +48,11 @@ namespace Application
 
             existingReader.Name = readerDto.Name;
             existingReader.Phone = readerDto.Phone;
-
             _readerRepository.Update(existingReader);
+            return true;
         }
 
-        public void DeleteReader(int id)
+        public bool DeleteReader(int id)
         {
             var readerToDelete = _readerRepository.GetById(id);
             if (readerToDelete == null)
@@ -54,6 +61,7 @@ namespace Application
             }
 
             _readerRepository.Delete(id);
+            return true;
         }
 
         public ReaderDto GetReaderById(int id)
@@ -80,8 +88,7 @@ namespace Application
                 Id = reader.Id,
                 Name = reader.Name,
                 Phone = reader.Phone
-            }).ToList();
+            });
         }
     }
-
 }

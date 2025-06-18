@@ -1,8 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Domain;
 using Infrastructure;
 
 namespace Application
@@ -11,21 +10,28 @@ namespace Application
     {
         private readonly IBookRepository _bookRepository;
 
-        public BookService(IBookRepository BookRepository)
+        public BookService(IBookRepository bookRepository)
         {
-            _bookRepository = BookRepository;
+            _bookRepository = bookRepository;
         }
 
-
-        public void AddBook(BookDto BookDto)
+        public BookDto AddBook(BookDto bookDto)
         {
-            var Book = new Domain.Book
+            var book = new Book
             {
-                Name = BookDto.Name
+                Name = bookDto.Name
             };
-            _bookRepository.Add(Book);
+
+            var createdBook = _bookRepository.Add(book);
+
+            return new BookDto
+            {
+                Id = createdBook.Id,
+                Name = createdBook.Name
+            };
         }
-        public void UpdateBook(BookDto bookDto)
+
+        public bool UpdateBook(BookDto bookDto)
         {
             if (bookDto == null)
             {
@@ -39,11 +45,11 @@ namespace Application
             }
 
             existingBook.Name = bookDto.Name;
-
             _bookRepository.Update(existingBook);
+            return true;
         }
 
-        public void DeleteBook(int id)
+        public bool DeleteBook(int id)
         {
             var bookToDelete = _bookRepository.GetById(id);
             if (bookToDelete == null)
@@ -52,6 +58,7 @@ namespace Application
             }
 
             _bookRepository.Delete(id);
+            return true;
         }
 
         public BookDto GetBookById(int id)
@@ -76,7 +83,7 @@ namespace Application
             {
                 Id = book.Id,
                 Name = book.Name
-            }).ToList();
+            });
         }
     }
 }

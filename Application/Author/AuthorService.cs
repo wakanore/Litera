@@ -1,10 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Application;
 using Infrastructure;
+using Domain;
 
 namespace Application
 {
@@ -12,23 +10,30 @@ namespace Application
     {
         private readonly IAuthorRepository _authorRepository;
 
-        public AuthorService(IAuthorRepository AuthorRepository)
+        public AuthorService(IAuthorRepository authorRepository)
         {
-            _authorRepository = AuthorRepository;
+            _authorRepository = authorRepository;
         }
 
-
-        public void AddAuthor(AuthorDto AuthorDto)
+        public AuthorDto AddAuthor(AuthorDto authorDto)
         {
-            var Author = new Domain.Author
+            var author = new Author
             {
-                Name = AuthorDto.Name,
-                Phone = AuthorDto.Phone
+                Name = authorDto.Name,
+                Phone = authorDto.Phone
             };
-            _authorRepository.Add(Author);
+
+            var createdAuthor = _authorRepository.Add(author);
+
+            return new AuthorDto
+            {
+                Id = createdAuthor.Id,
+                Name = createdAuthor.Name,
+                Phone = createdAuthor.Phone
+            };
         }
 
-        public void UpdateAuthor(AuthorDto authorDto)
+        public bool UpdateAuthor(AuthorDto authorDto)
         {
             if (authorDto == null)
             {
@@ -40,22 +45,21 @@ namespace Application
             {
                 throw new InvalidOperationException("Author not found.");
             }
-
             existingAuthor.Name = authorDto.Name;
             existingAuthor.Phone = authorDto.Phone;
-
             _authorRepository.Update(existingAuthor);
+            return true;
         }
 
-        public void DeleteAuthor(int id)
+        public bool DeleteAuthor(int id)
         {
             var authorToDelete = _authorRepository.GetById(id);
             if (authorToDelete == null)
             {
                 throw new InvalidOperationException("Author not found.");
             }
-
             _authorRepository.Delete(id);
+            return true;
         }
 
         public AuthorDto GetAuthorById(int id)
@@ -82,7 +86,7 @@ namespace Application
                 Id = author.Id,
                 Name = author.Name,
                 Phone = author.Phone
-            }).ToList();
+            });
         }
     }
 }
