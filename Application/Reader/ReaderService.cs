@@ -1,8 +1,9 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using Infrastructure;
+using System.Threading.Tasks;
 using Domain;
+using Infrastructure;
+using Microsoft.Extensions.Logging;
 
 namespace Application
 {
@@ -15,80 +16,79 @@ namespace Application
             _readerRepository = readerRepository;
         }
 
-        public ReaderDto AddReader(ReaderDto readerDto)
+        public async Task<ReaderDto> AddReader(ReaderDto readerDto)
         {
-            var reader = new Reader
+            var readerEntity = new Reader
             {
+                Name = readerDto.Name,
+                Phone = readerDto.Phone,
+            };
+
+            var addedReader = await _readerRepository.Add(readerEntity);
+
+            return new ReaderDto
+            {
+                Id = addedReader.Id,
+                Name = addedReader.Name,
+                Phone = addedReader.Phone
+            };
+        }
+
+        public Task<bool> UpdateReader(ReaderDto readerDto)
+        {
+            var reader = new Domain.Reader
+            {
+                Id = readerDto.Id,
                 Name = readerDto.Name,
                 Phone = readerDto.Phone
             };
 
-            var createdReader = _readerRepository.Add(reader);
+            return _readerRepository.Update(reader);
+        }
 
-            return new ReaderDto
+        public async Task<bool> DeleteReader(int id)
+        {
+            try
             {
-                Id = createdReader.Id,
-                Name = createdReader.Name,
-                Phone = createdReader.Phone
+                await _readerRepository.Delete(id);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<ReaderDto> GetReaderById(int id)
+        {
+            var readerEntity = await _readerRepository.GetById(id);
+
+            var readerDto = new ReaderDto
+            {
+                Id = readerEntity.Id,
+                Name = readerEntity.Name,
+                Phone = readerEntity.Phone
             };
+
+            return readerDto;
         }
 
-        public bool UpdateReader(ReaderDto readerDto)
+        public async Task<IEnumerable<ReaderDto>> GetAllReaders()
         {
-            if (readerDto == null)
+            try
             {
-                throw new ArgumentNullException(nameof(readerDto));
+                var readers = await _readerRepository.GetAll();
+                return readers.Select(reader => new ReaderDto
+                {
+                    Id = reader.Id,
+                    Name = reader.Name,
+                    Phone = reader.Phone
+                });
             }
-
-            var existingReader = _readerRepository.GetById(readerDto.Id);
-            if (existingReader == null)
+            catch (Exception ex)
             {
-                throw new InvalidOperationException("Reader not found.");
+                throw;
             }
-
-            existingReader.Name = readerDto.Name;
-            existingReader.Phone = readerDto.Phone;
-            _readerRepository.Update(existingReader);
-            return true;
-        }
-
-        public bool DeleteReader(int id)
-        {
-            var readerToDelete = _readerRepository.GetById(id);
-            if (readerToDelete == null)
-            {
-                throw new InvalidOperationException("Reader not found.");
-            }
-
-            _readerRepository.Delete(id);
-            return true;
-        }
-
-        public ReaderDto GetReaderById(int id)
-        {
-            var reader = _readerRepository.GetById(id);
-            if (reader == null)
-            {
-                throw new InvalidOperationException("Reader not found.");
-            }
-
-            return new ReaderDto
-            {
-                Id = reader.Id,
-                Name = reader.Name,
-                Phone = reader.Phone
-            };
-        }
-
-        public IEnumerable<ReaderDto> GetAll()
-        {
-            var readers = _readerRepository.GetAll();
-            return readers.Select(reader => new ReaderDto
-            {
-                Id = reader.Id,
-                Name = reader.Name,
-                Phone = reader.Phone
-            });
         }
     }
 }

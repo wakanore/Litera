@@ -1,17 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Application;
+using Domain;
+using Application;
+using System;
+using System.Threading.Tasks;
+using Infrastructure;
 
 namespace API.Controllers
 {
     [ApiController]
-    [Route("api/[[reader]]")]
+    [Route("api/[controller]")]
     public class ReaderController : ControllerBase
     {
-        private readonly ReaderService _readerService;
-
-        public ReaderController(ReaderService readerService)
+        private readonly IReaderService _readerService;
+        public ReaderController(IReaderService readerService)
         {
-            _readerService = readerService;
+            _readerService = readerService ?? throw new ArgumentNullException(nameof(readerService));
         }
 
         [HttpGet("{id}")]
@@ -26,40 +30,62 @@ namespace API.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var products = _readerService.GetAll();
-            return Ok(products);
+            var result = _readerService.GetAllReaders();
+            return Ok(result);
         }
 
         [HttpPost]
-        public IActionResult Create(ReaderDto readerDto)
+        public async Task<IActionResult> Create([FromBody] ReaderDto readerDto)
         {
-            _readerService.AddReader(readerDto);
-            return CreatedAtAction(nameof(GetById), new { id = readerDto.Id }, readerDto);
+            var reader = new ReaderDto
+            {
+                Name = readerDto.Name,
+                Phone = readerDto.Phone
+            };
+
+            var result = await _readerService.AddReader(reader);
+            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id, ReaderDto readerDto)
+        public async Task<IActionResult> Update(int id, [FromBody] ReaderDto readerDto)
         {
-            if (id != readerDto.Id)
-                return BadRequest();
-            _readerService.UpdateReader(readerDto);
-            bool isUpdated = _readerService.UpdateReader(readerDto);
+            try
+            {
+                if (id != readerDto.Id)
+                {
+                    return BadRequest("ID in URL does not match ID in body");
+                }
 
-            if (isUpdated)
-                return NoContent(); 
-            else
-                return NotFound(); 
+                var reader = new ReaderDto
+                {
+                    Id = readerDto.Id,
+                    Name = readerDto.Name,
+                    Phone = readerDto.Phone
+                };
+
+                bool isUpdated = await _readerService.UpdateReader(reader);
+
+                return isUpdated ? NoContent() : NotFound();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            bool isDelete = _readerService.DeleteReader(id);
-
-            if (isDelete)
-                return NoContent();
-            else
-                return NotFound(); 
+            try
+            {
+                var isDeleted = await _readerService.DeleteReader(id);
+                return isDeleted ? NoContent() : NotFound();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
     }
 }

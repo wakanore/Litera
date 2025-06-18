@@ -1,10 +1,11 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
+using Application;
 using Domain;
 using Infrastructure;
 
-namespace Application
+namespace Application.Services
 {
     public class BookService : IBookService
     {
@@ -15,59 +16,49 @@ namespace Application
             _bookRepository = bookRepository;
         }
 
-        public BookDto AddBook(BookDto bookDto)
+        public async Task<BookDto> AddBook(BookDto bookDto)
         {
-            var book = new Book
+            var domainBook = new Book
             {
-                Name = bookDto.Name
+                Name = bookDto.Name,
+                AuthorId = bookDto.Author.Id
             };
 
-            var createdBook = _bookRepository.Add(book);
+            var addedBook = await _bookRepository.Add(domainBook);
 
             return new BookDto
             {
-                Id = createdBook.Id,
-                Name = createdBook.Name
+                Id = addedBook.Id,
+                Name = addedBook.Name
             };
         }
 
-        public bool UpdateBook(BookDto bookDto)
+        public Task<bool> UpdateBook(BookDto bookDto)
         {
-            if (bookDto == null)
+            var domainBook = new Book
             {
-                throw new ArgumentNullException(nameof(bookDto));
-            }
+                Id = bookDto.Id,
+                Name = bookDto.Name,
+                AuthorId = bookDto.Author.Id
+            };
 
-            var existingBook = _bookRepository.GetById(bookDto.Id);
-            if (existingBook == null)
-            {
-                throw new InvalidOperationException("Book not found.");
-            }
-
-            existingBook.Name = bookDto.Name;
-            _bookRepository.Update(existingBook);
-            return true;
+            return _bookRepository.Update(domainBook);
         }
 
-        public bool DeleteBook(int id)
+        public Task<bool> DeleteBook(int id)
         {
-            var bookToDelete = _bookRepository.GetById(id);
-            if (bookToDelete == null)
-            {
-                throw new InvalidOperationException("Book not found.");
-            }
-
-            _bookRepository.Delete(id);
-            return true;
+            return _bookRepository.Delete(id)
+                .ContinueWith(task =>
+                {
+                    if (task.IsFaulted) 
+                        return false;
+                    return true;
+                });
         }
 
-        public BookDto GetBookById(int id)
+        public async Task<BookDto> GetBookById(int id)
         {
-            var book = _bookRepository.GetById(id);
-            if (book == null)
-            {
-                throw new InvalidOperationException("Book not found.");
-            }
+            var book = await _bookRepository.GetById(id);
 
             return new BookDto
             {
@@ -76,14 +67,21 @@ namespace Application
             };
         }
 
-        public IEnumerable<BookDto> GetAllBooks()
+        public async Task<IEnumerable<BookDto>> GetAllBooks()
         {
-            var books = _bookRepository.GetAll();
-            return books.Select(book => new BookDto
+            try
             {
-                Id = book.Id,
-                Name = book.Name
-            });
+                var books = await _bookRepository.GetAll();
+                return books.Select(book => new BookDto
+                {
+                    Id = book.Id,
+                    Name = book.Name
+                });
+            }
+            catch
+            {
+                return Enumerable.Empty<BookDto>();
+            }
         }
     }
 }

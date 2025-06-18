@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Domain;
 
@@ -6,10 +6,10 @@ namespace Infrastructure
 {
     public interface IAuthorRepository
     {
-        Author Add(Author user);
-        void Update(Author user);
-        void Delete(int id);
-        Author GetById(int id);
-        IEnumerable<Author> GetAll();
+        Task<Author> Add(Author author); 
+        Task Update(Author author);
+        Task Delete(int id);
+        Task<Author> GetById(int id);
+        Task<IEnumerable<Author>> GetAll();
     }
 }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Domain;
 
@@ -6,10 +6,10 @@ namespace Infrastructure
 {
     public interface IBookRepository
     {
-        Book Add(Book book);
-        void Update(Book book);
-        void Delete(int id);
-        Book GetById(int id);
-        IEnumerable<Book> GetAll();
+        Task<Book> Add(Book book);
+        Task<bool> Update(Book book);
+        Task Delete(int id);
+        Task<Book> GetById(int id);
+        Task<IEnumerable<Book>> GetAll();
     }
 }

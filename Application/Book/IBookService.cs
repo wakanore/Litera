@@ -1,4 +1,5 @@
-using Domain;
+﻿using Domain;
+using Infrastructure;
 using System;
 using System.Collections.Generic;
 
@@ -6,10 +7,10 @@ namespace Application
 {
     public interface IBookService
     {
-        BookDto AddBook(BookDto bookDto);
-        bool UpdateBook(BookDto bookDto);
-        bool DeleteBook(int id);
-        BookDto GetBookById(int id);
-        IEnumerable<BookDto> GetAllBooks();
+        Task<BookDto> AddBook(BookDto bookDto);
+        Task<bool> UpdateBook(BookDto book);
+        Task<bool> DeleteBook(int id);
+        Task<BookDto> GetBookById(int id);
+        Task<IEnumerable<BookDto>> GetAllBooks();
     }
 }

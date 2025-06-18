@@ -6,8 +6,8 @@ namespace Infrastructure
 {
     public interface IFavouriteRepository
     {
-        void Add(Favourite book);
-        void Delete(int id);
-        IEnumerable<Favourite> GetAll();
+        Task<bool> FavouriteExists(int authorId, int readerId);
+        Task<Favourite> Add(Favourite favourite);
+        Task<bool> Delete(int authorId, int readerId);
     }
 }

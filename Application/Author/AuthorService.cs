@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Infrastructure;
@@ -15,78 +15,57 @@ namespace Application
             _authorRepository = authorRepository;
         }
 
-        public AuthorDto AddAuthor(AuthorDto authorDto)
+        public async Task<AuthorDto> AddAuthor(Author author)
         {
-            var author = new Author
-            {
-                Name = authorDto.Name,
-                Phone = authorDto.Phone
-            };
-
-            var createdAuthor = _authorRepository.Add(author);
+            var addedAuthor = await _authorRepository.Add(author);
 
             return new AuthorDto
             {
-                Id = createdAuthor.Id,
-                Name = createdAuthor.Name,
-                Phone = createdAuthor.Phone
+                Id = addedAuthor.Id,
+                Name = addedAuthor.Name
             };
         }
 
-        public bool UpdateAuthor(AuthorDto authorDto)
+        public async Task<bool> UpdateAuthor(Author author)
         {
-            if (authorDto == null)
+            try
             {
-                throw new ArgumentNullException(nameof(authorDto));
+                await _authorRepository.Update(author);
+                return true;
             }
-
-            var existingAuthor = _authorRepository.GetById(authorDto.Id);
-            if (existingAuthor == null)
+            catch
             {
-                throw new InvalidOperationException("Author not found.");
+                return false;
             }
-            existingAuthor.Name = authorDto.Name;
-            existingAuthor.Phone = authorDto.Phone;
-            _authorRepository.Update(existingAuthor);
-            return true;
         }
 
-        public bool DeleteAuthor(int id)
+        public async Task<bool> DeleteAuthor(int id)
         {
-            var authorToDelete = _authorRepository.GetById(id);
-            if (authorToDelete == null)
+            try
             {
-                throw new InvalidOperationException("Author not found.");
+                await _authorRepository.Delete(id);
+                return true;
             }
-            _authorRepository.Delete(id);
-            return true;
+            catch
+            {
+                return false;
+            }
         }
 
-        public AuthorDto GetAuthorById(int id)
+        public async Task<AuthorDto> GetAuthorById(int id)
         {
-            var author = _authorRepository.GetById(id);
-            if (author == null)
-            {
-                throw new InvalidOperationException("Author not found.");
-            }
+            var author = await _authorRepository.GetById(id);
 
             return new AuthorDto
             {
                 Id = author.Id,
-                Name = author.Name,
-                Phone = author.Phone
+                Name = author.Name
             };
         }
 
-        public IEnumerable<AuthorDto> GetAllAuthors()
+        public async Task<IEnumerable<Author>> GetAllAuthors()
         {
-            var authors = _authorRepository.GetAll();
-            return authors.Select(author => new AuthorDto
-            {
-                Id = author.Id,
-                Name = author.Name,
-                Phone = author.Phone
-            });
+            return await _authorRepository.GetAll();
         }
     }
 }

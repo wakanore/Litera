@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Application;
+using Domain;
+using Infrastructure;
+using Application.Services;
 
 namespace API.Controllers
 {
@@ -7,11 +10,10 @@ namespace API.Controllers
     [Route("api/[[author]]")]
     public class AuthorController : ControllerBase
     {
-        private readonly AuthorService _authorService;
-
-        public AuthorController(AuthorService authorService)
+        private readonly IAuthorService _authorService;
+        public AuthorController(IAuthorService authorService)
         {
-            _authorService = authorService;
+            _authorService = authorService ?? throw new ArgumentNullException(nameof(authorService));
         }
 
         [HttpGet("{id}")]
@@ -31,35 +33,53 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(AuthorDto authorDto)
+        public async Task<IActionResult> Create([FromBody] AuthorDto authorDto)
         {
-            _authorService.AddAuthor(authorDto);
-            return CreatedAtAction(nameof(GetById), new { id = authorDto.Id }, authorDto);
+            var author = new Author
+            {
+                Name = authorDto.Name,
+                Phone = authorDto.Phone
+            };
+
+            var result = await _authorService.AddAuthor(author);
+            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id, AuthorDto authorDto)
+        public async Task<IActionResult> Update(int id, [FromBody] AuthorDto authorDto)
         {
-            if (id != authorDto.Id)
-                return BadRequest();
-            _authorService.UpdateAuthor(authorDto);
-            bool isUpdated = _authorService.UpdateAuthor(authorDto);
+            try
+            {
+                if (id != authorDto.Id)
+                {
+                    return BadRequest("ID in URL does not match ID in body");
+                }
 
-            if (isUpdated)
-                return NoContent(); 
-            else
-                return NotFound(); 
+                var author = new Author
+                {
+                    Id = authorDto.Id,
+                    Name = authorDto.Name,
+                    Phone = authorDto.Phone
+                };
+
+                bool isUpdated = await _authorService.UpdateAuthor(author);
+
+                return isUpdated ? NoContent() : NotFound();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            bool isDeleted = _authorService.DeleteAuthor(id);
+            bool deleted = await _authorService.DeleteAuthor(id);
 
-            if (isDeleted)
-                return NoContent();
-            else
-                return NotFound();
+            return deleted
+                ? NoContent()
+                : NotFound($"Author with id {id} not found");
         }
     }
 }
