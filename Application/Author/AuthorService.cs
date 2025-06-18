@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Infrastructure;
@@ -24,7 +24,6 @@ namespace Application
             };
 
             var createdAuthor = _authorRepository.Add(author);
-
 
             return new AuthorDto
             {

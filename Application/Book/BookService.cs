@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Domain;
@@ -30,6 +30,7 @@ namespace Application
                 Name = createdBook.Name
             };
         }
+
         public bool UpdateBook(BookDto bookDto)
         {
             if (bookDto == null)
@@ -44,7 +45,6 @@ namespace Application
             }
 
             existingBook.Name = bookDto.Name;
-
             _bookRepository.Update(existingBook);
             return true;
         }

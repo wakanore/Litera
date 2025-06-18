@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Domain;
@@ -17,7 +17,6 @@ namespace Infrastructure
             _authors.Add(new Author { Id = 4, Name = "Pushkin", Phone = "+79414827364" });
             _authors.Add(new Author { Id = 5, Name = "Gogol", Phone = "+79504897653" });
             _authors.Add(new Author { Id = 6, Name = "Turgenev", Phone = "+79614857391" });
-
         }
 
         public Author Add(Author author)
@@ -35,8 +34,8 @@ namespace Infrastructure
                 throw new InvalidOperationException("Author not found.");
             }
 
-            // Обновляем данные автора
             existingAuthor.Name = author.Name;
+            existingAuthor.Phone = author.Phone;
             existingAuthor.Description = author.Description;
         }
 
@@ -57,13 +56,12 @@ namespace Infrastructure
             {
                 throw new InvalidOperationException("Author not found.");
             }
-
             return author;
         }
 
         public IEnumerable<Author> GetAll()
         {
-            return _authors; // Возвращаем всех авторов
+            return _authors;
         }
     }
 }

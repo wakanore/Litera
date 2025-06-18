@@ -1,4 +1,4 @@
-﻿using Domain;
+using Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +22,7 @@ namespace Infrastructure
 
         public Reader Add(Reader reader)
         {
-            reader.Id = _readers.Any() ? _readers.Max(a => a.Id) + 1 : 1;
+            reader.Id = _readers.Any() ? _readers.Max(r => r.Id) + 1 : 1;
             _readers.Add(reader);
             return reader;
         }
@@ -35,9 +35,9 @@ namespace Infrastructure
                 throw new InvalidOperationException("Reader not found.");
             }
 
-
             existingReader.Name = reader.Name;
             existingReader.Phone = reader.Phone;
+            existingReader.Description = reader.Description;
         }
 
         public void Delete(int id)
@@ -47,9 +47,9 @@ namespace Infrastructure
             {
                 throw new InvalidOperationException("Reader not found.");
             }
-
             _readers.Remove(readerToDelete);
         }
+
         public Reader GetById(int id)
         {
             var reader = _readers.FirstOrDefault(r => r.Id == id);
@@ -57,14 +57,12 @@ namespace Infrastructure
             {
                 throw new InvalidOperationException("Reader not found.");
             }
-
             return reader;
         }
 
         public IEnumerable<Reader> GetAll()
         {
-            return _readers; // Возвращаем всех читателей
+            return _readers;
         }
     }
-
 }

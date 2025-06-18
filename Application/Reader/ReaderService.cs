@@ -1,9 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Infrastructure;
 using Domain;
-
 
 namespace Application
 {
@@ -16,7 +15,6 @@ namespace Application
             _readerRepository = readerRepository;
         }
 
-
         public ReaderDto AddReader(ReaderDto readerDto)
         {
             var reader = new Reader
@@ -26,7 +24,6 @@ namespace Application
             };
 
             var createdReader = _readerRepository.Add(reader);
-
 
             return new ReaderDto
             {
@@ -51,7 +48,6 @@ namespace Application
 
             existingReader.Name = readerDto.Name;
             existingReader.Phone = readerDto.Phone;
-
             _readerRepository.Update(existingReader);
             return true;
         }
