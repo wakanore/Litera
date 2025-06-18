@@ -1,71 +1,96 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using Infrastructure;
+using System.Threading.Tasks;
 using Domain;
+using Application.Exceptions;
+using FluentValidation;
+using Infrastructure;
 
 namespace Application
 {
     public class AuthorService : IAuthorService
     {
         private readonly IAuthorRepository _authorRepository;
+        private readonly IValidator<CreateAuthorRequest> _createValidator;
+        private readonly IValidator<UpdateAuthorRequest> _updateValidator;
 
-        public AuthorService(IAuthorRepository authorRepository)
+        public AuthorService(
+            IAuthorRepository authorRepository,
+            IValidator<CreateAuthorRequest> createValidator,
+            IValidator<UpdateAuthorRequest> updateValidator)
         {
-            _authorRepository = authorRepository;
+            _authorRepository = authorRepository ?? throw new ArgumentNullException(nameof(authorRepository));
+            _createValidator = createValidator ?? throw new ArgumentNullException(nameof(createValidator));
+            _updateValidator = updateValidator ?? throw new ArgumentNullException(nameof(updateValidator));
         }
 
-        public async Task<AuthorDto> AddAuthor(Author author)
+        public async Task<AuthorResponse> CreateAuthor(CreateAuthorRequest request)
         {
-            var addedAuthor = await _authorRepository.Add(author);
+            var validationResult = await _createValidator.ValidateAsync(request);
+            if (!validationResult.IsValid)
+                throw new Application.Exceptions.ValidationException(validationResult.Errors);
 
-            return new AuthorDto
+            var author = new Author
             {
-                Id = addedAuthor.Id,
-                Name = addedAuthor.Name
+                Name = request.Name,
+                Phone = request.Phone
             };
+
+            var createdAuthor = await _authorRepository.Add(author);
+
+            return MapToResponse(createdAuthor);
         }
 
-        public async Task<bool> UpdateAuthor(Author author)
+        public async Task<AuthorResponse> UpdateAuthor(UpdateAuthorRequest request)
         {
-            try
-            {
-                await _authorRepository.Update(author);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            var validationResult = await _updateValidator.ValidateAsync(request);
+            if (!validationResult.IsValid)
+                throw new Application.Exceptions.ValidationException(validationResult.Errors); ;
+
+            var existingAuthor = await _authorRepository.GetById(request.Id);
+            if (existingAuthor == null)
+                throw new NotFoundException($"Author with id {request.Id} not found");
+
+            existingAuthor.Name = request.Name;
+            existingAuthor.Phone = request.Phone;
+
+            await _authorRepository.Update(existingAuthor);
+
+            return MapToResponse(existingAuthor);
         }
 
         public async Task<bool> DeleteAuthor(int id)
         {
-            try
-            {
-                await _authorRepository.Delete(id);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            var author = await _authorRepository.GetById(id);
+            if (author == null)
+                throw new NotFoundException($"Author with ID {id} not found.");
+
+            await _authorRepository.Delete(id);
+            return true;
         }
 
-        public async Task<AuthorDto> GetAuthorById(int id)
+        public async Task<AuthorResponse> GetAuthorById(int id)
         {
             var author = await _authorRepository.GetById(id);
+            if (author == null)
+                throw new NotFoundException($"Author with ID {id} not found.");
 
-            return new AuthorDto
-            {
-                Id = author.Id,
-                Name = author.Name
-            };
+            return MapToResponse(author);
         }
 
-        public async Task<IEnumerable<Author>> GetAllAuthors()
+        public async Task<IEnumerable<AuthorResponse>> GetAllAuthors()
         {
-            return await _authorRepository.GetAll();
+            var authors = await _authorRepository.GetAll();
+            return authors.Select(MapToResponse);
+        }
+
+        private AuthorResponse MapToResponse(Author author)
+        {
+            return new AuthorResponse(
+                Id: author.Id,
+                Name: author.Name,
+                Phone: author.Phone
+            );
         }
     }
 }

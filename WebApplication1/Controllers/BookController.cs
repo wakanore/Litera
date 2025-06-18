@@ -5,6 +5,9 @@ using System;
 using System.Threading.Tasks;
 using Infrastructure;
 using Application.Services;
+using FluentValidation;
+using System.Collections.Generic;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace API.Controllers
 {
@@ -13,7 +16,8 @@ namespace API.Controllers
     public class BookController : ControllerBase
     {
         private readonly IBookService _bookService;
-        public BookController(IBookService bookService)
+
+        public BookController(IBookService bookService, IValidator<CreateBookRequest> validator)
         {
             _bookService = bookService ?? throw new ArgumentNullException(nameof(bookService));
         }
@@ -39,80 +43,34 @@ namespace API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            try
-            {
-                var books = await _bookService.GetAllBooks();
-                return Ok(books);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+            var books = await _bookService.GetAllBooks();
+            return Ok(books);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] BookDto bookDto)
-        {
-            try
-            {
-                var book = new BookDto
-                {
-                    Name = bookDto.Name
-                };
-
-                var createdBook = await _bookService.AddBook(book);
-
-                var resultDto = new BookDto
-                {
-                    Id = createdBook.Id,
-                    Name = createdBook.Name
-                };
-
-                return CreatedAtAction(nameof(GetById), new { id = resultDto.Id }, resultDto);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+        public async Task<IActionResult> Create([FromBody] CreateBookRequest bookDto)
+        {  
+            var result = await _bookService.CreateBook(bookDto);
+            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);          
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] BookDto bookDto)
+        public async Task<IActionResult> Update(int id, [FromBody] UpdateBookRequest bookDto)
         {
-            try
+            if (id != bookDto.Id)
             {
-                if (id != bookDto.Id)
-                {
-                    return BadRequest("ID in URL does not match ID in body");
-                }
-
-                var book = new BookDto
-                {
-                    Id = bookDto.Id,
-                    Name = bookDto.Name
-                };
-
-                var isUpdated = await _bookService.UpdateBook(book);
-                return isUpdated ? NoContent() : NotFound();
+                return BadRequest("ID in URL does not match ID in body");
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+
+            var updatedBook = await _bookService.UpdateBook(bookDto);
+            return updatedBook != null ? NoContent() : NotFound();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            try
-            {
-                var isDeleted = await _bookService.DeleteBook(id);
-                return isDeleted ? NoContent() : NotFound();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+            var isDeleted = await _bookService.DeleteBook(id);
+            return isDeleted ? NoContent() : NotFound();
         }
     }
 }

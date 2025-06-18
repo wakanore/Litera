@@ -6,10 +6,10 @@ namespace Application
 {
     public interface IAuthorService
     {
-        Task<AuthorDto> AddAuthor(Author author);
-        Task<bool> UpdateAuthor(Author author);
+        Task<AuthorResponse> CreateAuthor(CreateAuthorRequest request);
+        Task<AuthorResponse> UpdateAuthor(UpdateAuthorRequest request);
         Task<bool> DeleteAuthor(int id);
-        Task<AuthorDto> GetAuthorById(int id);
-        Task<IEnumerable<Author>> GetAllAuthors();
+        Task<AuthorResponse> GetAuthorById(int id);
+        Task<IEnumerable<AuthorResponse>> GetAllAuthors();
     }
 }

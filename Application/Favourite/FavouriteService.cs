@@ -1,54 +1,73 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Infrastructure;
+﻿using Application.Exceptions;
 using Domain;
+using FluentValidation;
+using Infrastructure;
 
 namespace Application
 {
     public class FavouriteService : IFavouriteService
     {
         private readonly IFavouriteRepository _favouriteRepository;
+        private readonly IValidator<CreateFavouriteRequest> _createValidator;
 
-        public FavouriteService(IFavouriteRepository favouriteRepository)
+        public FavouriteService(
+            IFavouriteRepository favouriteRepository,
+            IValidator<CreateFavouriteRequest> createValidator)
         {
-            _favouriteRepository = favouriteRepository;
+            _favouriteRepository = favouriteRepository ?? throw new ArgumentNullException(nameof(favouriteRepository));
+            _createValidator = createValidator ?? throw new ArgumentNullException(nameof(createValidator));
         }
 
-
-        public async Task<bool> AddFavourite(FavouriteDto favouriteDto)
+        public async Task<FavouriteResponse> AddFavourite(CreateFavouriteRequest request)
         {
-            try
-            {
-                var favourite = new Favourite
-                {
-                    AuthorId = favouriteDto.AuthorId,
-                    ReaderId = favouriteDto.ReaderId
-                };
+            var validationResult = await _createValidator.ValidateAsync(request);
+            if (!validationResult.IsValid)
+                throw new Application.Exceptions.ValidationException(validationResult.Errors);
 
-                await _favouriteRepository.Add(favourite);
-                return true;
-            }
-            catch
+            var favourite = new Favourite
             {
-                return false;
-            }
-        }
-        public async Task<bool> FavouriteExists(int authorId, int readerId)
-        {
-            return await _favouriteRepository.FavouriteExists(authorId, readerId);
+                UserId = request.UserId,
+                BookId = request.BookId
+            };
+
+            var createdFavourite = await _favouriteRepository.Add(favourite);
+
+            return MapToResponse(createdFavourite);
         }
 
-        public Task<bool> DeleteFavourite(int authorId, int readerId)
+        public async Task<bool> FavouriteExists(int userId, int bookId)
         {
-            try
-            {
-                return _favouriteRepository.Delete(authorId, readerId);
-            }
-            catch (Exception ex)
-            {
-                throw new InvalidOperationException("Favourite not found.", ex);
-            }
+            if (userId <= 0)
+                throw new ArgumentException("Invalid user ID", nameof(userId));
+
+            if (bookId <= 0)
+                throw new ArgumentException("Invalid book ID", nameof(bookId));
+
+            return await _favouriteRepository.FavouriteExists(userId, bookId);
+        }
+
+        public async Task<bool> DeleteFavourite(int userId, int bookId)
+        {
+            if (userId <= 0)
+                throw new ArgumentException("Invalid user ID", nameof(userId));
+
+            if (bookId <= 0)
+                throw new ArgumentException("Invalid book ID", nameof(bookId));
+
+            var exists = await _favouriteRepository.FavouriteExists(userId, bookId);
+            if (!exists)
+                throw new NotFoundException($"Favourite for user {userId} and book {bookId} not found.");
+
+            await _favouriteRepository.Delete(userId, bookId);
+            return true;
+        }
+
+        private FavouriteResponse MapToResponse(Favourite favourite)
+        {
+            return new FavouriteResponse(
+                UserId: favourite.UserId,
+                BookId: favourite.BookId
+            );
         }
     }
 }

@@ -17,7 +17,6 @@ namespace Infrastructure
             _authors.Add(new Author { Id = 4, Name = "Pushkin", Phone = "+79414827364" });
             _authors.Add(new Author { Id = 5, Name = "Gogol", Phone = "+79504897653" });
             _authors.Add(new Author { Id = 6, Name = "Turgenev", Phone = "+79614857391" });
-
         }
 
         public Author Add(Author author)

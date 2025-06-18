@@ -16,6 +16,7 @@ namespace Infrastructure
             _books.Add(new Book { Id = 4, Name = "The Brothers Karamazov", AuthorId = 2 });
             _books.Add(new Book { Id = 5, Name = "The Cherry Orchard", AuthorId = 3 });
         }
+
         public Book Add(Book book)
         {
             book.Id = _books.Any() ? _books.Max(a => a.Id) + 1 : 1;
@@ -46,6 +47,7 @@ namespace Infrastructure
 
             _books.Remove(bookToDelete);
         }
+
         public Book GetById(int id)
         {
             var book = _books.FirstOrDefault(b => b.Id == id);
@@ -56,10 +58,10 @@ namespace Infrastructure
 
             return book;
         }
+
         public IEnumerable<Book> GetAll()
         {
             return _books;
         }
-
     }
 }

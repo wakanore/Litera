@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Application;
+using FluentValidation;
+using FluentValidation.Results;
 
 namespace API.Controllers
 {
@@ -8,47 +10,26 @@ namespace API.Controllers
     public class FavouriteController : ControllerBase
     {
         private readonly IFavouriteService _favouriteService;
-        public FavouriteController(IFavouriteService favouriteService)
+
+        public FavouriteController(
+            IFavouriteService favouriteService,
+            IValidator<CreateFavouriteRequest> validator)
         {
             _favouriteService = favouriteService ?? throw new ArgumentNullException(nameof(favouriteService));
         }
 
-        [HttpDelete("{authorId}/{readerId}")]
-        public async Task<IActionResult> Delete(int authorId, int readerId)
+        [HttpDelete("{UserId}/{BookId}")]
+        public async Task<IActionResult> Delete(int UserId, int BookId)
         {
-            try
-            {
-                bool isDeleted = await _favouriteService.DeleteFavourite(authorId, readerId);
-                return isDeleted ? NoContent() : NotFound();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+            bool isDeleted = await _favouriteService.DeleteFavourite(UserId, BookId);
+            return isDeleted ? NoContent() : NotFound();
         }
+
         [HttpPost]
-        public async Task<IActionResult> Add([FromBody] FavouriteDto favouriteDto)
+        public async Task<bool> Add([FromBody] CreateFavouriteRequest favouriteDto)
         {
-            try
-            {
-                bool alreadyExists = await _favouriteService.FavouriteExists(favouriteDto.AuthorId, favouriteDto.ReaderId);
-                if (alreadyExists)
-                {
-                    return Conflict("This favorite already exists");
-                }
-
-                bool isAdded = await _favouriteService.AddFavourite(favouriteDto);
-
-                return CreatedAtRoute(new
-                {
-                    authorId = favouriteDto.AuthorId,
-                    readerId = favouriteDto.ReaderId
-                }, null);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+            var result = await _favouriteService.AddFavourite(favouriteDto);
+            return true;
         }
     }
 }

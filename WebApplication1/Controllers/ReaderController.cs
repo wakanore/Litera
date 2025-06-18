@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Application;
-using Domain;
-using Application;
-using System;
+using FluentValidation;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using Infrastructure;
+using System;
+using Domain;
+using Application.Services;
 
 namespace API.Controllers
 {
@@ -13,79 +14,55 @@ namespace API.Controllers
     public class ReaderController : ControllerBase
     {
         private readonly IReaderService _readerService;
-        public ReaderController(IReaderService readerService)
+
+        public ReaderController(
+            IReaderService readerService,
+            IValidator<CreateReaderRequest> validator)
         {
             _readerService = readerService ?? throw new ArgumentNullException(nameof(readerService));
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetById(int id)
-        {
-            var result = _readerService.GetReaderById(id);
-            if (result == null)
-                return NotFound();
-            return Ok(result);
-        }
-
-        [HttpGet]
-        public IActionResult GetAll()
-        {
-            var result = _readerService.GetAllReaders();
-            return Ok(result);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] ReaderDto readerDto)
-        {
-            var reader = new ReaderDto
-            {
-                Name = readerDto.Name,
-                Phone = readerDto.Phone
-            };
-
-            var result = await _readerService.AddReader(reader);
-            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] ReaderDto readerDto)
+        public async Task<IActionResult> GetById(int id)
         {
             try
             {
-                if (id != readerDto.Id)
-                {
-                    return BadRequest("ID in URL does not match ID in body");
-                }
-
-                var reader = new ReaderDto
-                {
-                    Id = readerDto.Id,
-                    Name = readerDto.Name,
-                    Phone = readerDto.Phone
-                };
-
-                bool isUpdated = await _readerService.UpdateReader(reader);
-
-                return isUpdated ? NoContent() : NotFound();
+                var result = await _readerService.GetReaderById(id);
+                return result != null ? Ok(result) : NotFound();
             }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var readers = await _readerService.GetAllReaders();
+            return Ok(readers);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] CreateReaderRequest readerDto)
+        {
+            var result = await _readerService.CreateReader(readerDto);
+            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] UpdateReaderRequest readerDto)
+        {
+            await _readerService.UpdateReader(readerDto);
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            try
-            {
-                var isDeleted = await _readerService.DeleteReader(id);
-                return isDeleted ? NoContent() : NotFound();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+            return await _readerService.DeleteReader(id)
+               ? NoContent()
+               : NotFound($"Author with id {id} not found");
         }
     }
 }

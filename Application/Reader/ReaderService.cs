@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Application.Exceptions;
 using Domain;
+using FluentValidation;
 using Infrastructure;
 using Microsoft.Extensions.Logging;
 
@@ -10,85 +13,122 @@ namespace Application
     public class ReaderService : IReaderService
     {
         private readonly IReaderRepository _readerRepository;
+        private readonly IValidator<CreateReaderRequest> _createValidator;
+        private readonly IValidator<UpdateReaderRequest> _updateValidator;
+        private readonly ILogger<ReaderService> _logger;
 
-        public ReaderService(IReaderRepository readerRepository)
+        public ReaderService(
+            IReaderRepository readerRepository,
+            IValidator<CreateReaderRequest> createValidator,
+            IValidator<UpdateReaderRequest> updateValidator,
+            ILogger<ReaderService> logger)
         {
-            _readerRepository = readerRepository;
+            _readerRepository = readerRepository ?? throw new ArgumentNullException(nameof(readerRepository));
+            _createValidator = createValidator ?? throw new ArgumentNullException(nameof(createValidator));
+            _updateValidator = updateValidator ?? throw new ArgumentNullException(nameof(updateValidator));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<ReaderDto> AddReader(ReaderDto readerDto)
+        public async Task<ReaderResponse> CreateReader(CreateReaderRequest request)
         {
-            var readerEntity = new Reader
+            var validationResult = await _createValidator.ValidateAsync(request);
+            if (!validationResult.IsValid)
             {
-                Name = readerDto.Name,
-                Phone = readerDto.Phone,
+                _logger.LogWarning("Validation failed for CreateReaderRequest: {Errors}", validationResult.Errors);
+                throw new Application.Exceptions.ValidationException(validationResult.Errors);
+            }
+
+            var reader = new Reader
+            {
+                Id = request.Id,
+                Name = request.Name,
+                Phone = request.Phone
             };
 
-            var addedReader = await _readerRepository.Add(readerEntity);
+            var createdReader = await _readerRepository.Add(reader);
+            _logger.LogInformation("Created new reader with ID: {ReaderId}", createdReader.Id);
 
-            return new ReaderDto
-            {
-                Id = addedReader.Id,
-                Name = addedReader.Name,
-                Phone = addedReader.Phone
-            };
+            return MapToResponse(createdReader);
         }
 
-        public Task<bool> UpdateReader(ReaderDto readerDto)
+        public async Task<ReaderResponse> UpdateReader(UpdateReaderRequest request)
         {
-            var reader = new Domain.Reader
+            var validationResult = await _updateValidator.ValidateAsync(request);
+            if (!validationResult.IsValid)
             {
-                Id = readerDto.Id,
-                Name = readerDto.Name,
-                Phone = readerDto.Phone
-            };
+                _logger.LogWarning("Validation failed for UpdateReaderRequest: {Errors}", validationResult.Errors);
+                throw new Application.Exceptions.ValidationException(validationResult.Errors);
+            }
 
-            return _readerRepository.Update(reader);
+            var existingReader = await _readerRepository.GetById(request.Id);
+            if (existingReader == null)
+            {
+                _logger.LogWarning("Reader with ID {ReaderId} not found for update", request.Id);
+                throw new NotFoundException($"Reader with id {request.Id} not found");
+            }
+
+            existingReader.Name = request.Name;
+            existingReader.Phone = request.Phone;
+
+            await _readerRepository.Update(existingReader);
+            _logger.LogInformation("Updated reader with ID: {ReaderId}", request.Id);
+
+            return MapToResponse(existingReader);
         }
 
         public async Task<bool> DeleteReader(int id)
         {
-            try
+            if (id <= 0)
             {
-                await _readerRepository.Delete(id);
-                return true;
+                _logger.LogWarning("Attempt to delete reader with invalid ID: {ReaderId}", id);
+                throw new ArgumentException("Invalid reader ID", nameof(id));
             }
-            catch
+
+            var existingReader = await _readerRepository.GetById(id);
+            if (existingReader == null)
             {
-                return false;
+                _logger.LogWarning("Reader with ID {ReaderId} not found for deletion", id);
+                throw new NotFoundException($"Reader with id {id} not found");
             }
+
+            await _readerRepository.Delete(id);
+            _logger.LogInformation("Deleted reader with ID: {ReaderId}", id);
+            return true;
         }
 
-        public async Task<ReaderDto> GetReaderById(int id)
+        public async Task<ReaderResponse> GetReaderById(int id)
         {
-            var readerEntity = await _readerRepository.GetById(id);
-
-            var readerDto = new ReaderDto
+            if (id <= 0)
             {
-                Id = readerEntity.Id,
-                Name = readerEntity.Name,
-                Phone = readerEntity.Phone
-            };
+                _logger.LogWarning("Attempt to get reader with invalid ID: {ReaderId}", id);
+                throw new ArgumentException("Invalid reader ID", nameof(id));
+            }
 
-            return readerDto;
+            var reader = await _readerRepository.GetById(id);
+            if (reader == null)
+            {
+                _logger.LogWarning("Reader with ID {ReaderId} not found", id);
+                throw new NotFoundException($"Reader with ID {id} not found.");
+            }
+
+            return MapToResponse(reader);
         }
 
-        public async Task<IEnumerable<ReaderDto>> GetAllReaders()
+        public async Task<IEnumerable<ReaderResponse>> GetAllReaders()
         {
-            try
-            {
-                var readers = await _readerRepository.GetAll();
-                return readers.Select(reader => new ReaderDto
-                {
-                    Id = reader.Id,
-                    Name = reader.Name,
-                    Phone = reader.Phone
-                });
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            var readers = await _readerRepository.GetAll();
+            _logger.LogInformation("Retrieved {Count} readers", readers.Count());
+
+            return readers.Select(MapToResponse);
+        }
+
+        private ReaderResponse MapToResponse(Reader reader)
+        {
+            return new ReaderResponse(
+                Id: reader.Id,
+                Name: reader.Name,
+                Phone: reader.Phone
+            );
         }
     }
 }

@@ -6,7 +6,7 @@ public class InitialDatabaseSchema : Migration
 {
     public override void Up()
     {
-        Create.Table("user")
+        Create.Table("users")
             .WithColumn("id").AsInt32().PrimaryKey().Identity()
             .WithColumn("name").AsString(100).NotNullable()
             .WithColumn("description").AsString(500).Nullable()
@@ -16,18 +16,18 @@ public class InitialDatabaseSchema : Migration
             .WithColumn("id").AsInt32().PrimaryKey().Identity()
             .WithColumn("name").AsString(100).NotNullable()
             .WithColumn("style").AsString(50).Nullable()
-            .WithColumn("author_id").AsInt32().ForeignKey("user", "id");
+            .WithColumn("author_id").AsInt32().ForeignKey("users", "id");
 
         Create.Table("favourites")
             .WithColumn("book_id").AsInt32().ForeignKey("book", "id")
-            .WithColumn("user_id").AsInt32().ForeignKey("user", "id");
+            .WithColumn("user_id").AsInt32().ForeignKey("users", "id");
 
         Create.PrimaryKey("favourites_pk").OnTable("favourites")
             .Columns("book_id", "user_id");
 
         Create.Table("read_history")
             .WithColumn("id").AsInt32().PrimaryKey().Identity()
-            .WithColumn("user_id").AsInt32().ForeignKey("user", "id")
+            .WithColumn("user_id").AsInt32().ForeignKey("users", "id")
             .WithColumn("book_id").AsInt32().ForeignKey("book", "id")
             .WithColumn("page").AsInt32().NotNullable()
             .WithColumn("update_date").AsDateTime().NotNullable().WithDefaultValue(SystemMethods.CurrentDateTime);
@@ -38,6 +38,6 @@ public class InitialDatabaseSchema : Migration
         Delete.Table("read_history");
         Delete.Table("favourites");
         Delete.Table("book");
-        Delete.Table("user");
+        Delete.Table("users");
     }
 }

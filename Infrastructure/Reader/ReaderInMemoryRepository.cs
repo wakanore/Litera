@@ -34,8 +34,6 @@ namespace Infrastructure
             {
                 throw new InvalidOperationException("Reader not found.");
             }
-
-
             existingReader.Name = reader.Name;
             existingReader.Phone = reader.Phone;
         }
@@ -50,6 +48,7 @@ namespace Infrastructure
 
             _readers.Remove(readerToDelete);
         }
+
         public Reader GetById(int id)
         {
             var reader = _readers.FirstOrDefault(r => r.Id == id);
@@ -66,5 +65,4 @@ namespace Infrastructure
             return _readers;
         }
     }
-
 }

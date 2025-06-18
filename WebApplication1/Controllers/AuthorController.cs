@@ -1,17 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Application;
 using Domain;
-using Infrastructure;
 using Application.Services;
+using FluentValidation;
 
 namespace API.Controllers
 {
     [ApiController]
-    [Route("api/[[author]]")]
+    [Route("api/authors")]  
     public class AuthorController : ControllerBase
     {
         private readonly IAuthorService _authorService;
-        public AuthorController(IAuthorService authorService)
+
+        public AuthorController(
+            IAuthorService authorService,
+            IValidator<CreateAuthorRequest> validator)
         {
             _authorService = authorService ?? throw new ArgumentNullException(nameof(authorService));
         }
@@ -20,64 +23,34 @@ namespace API.Controllers
         public IActionResult GetById(int id)
         {
             var result = _authorService.GetAuthorById(id);
-            if (result == null)
-                return NotFound();
             return Ok(result);
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var result = _authorService.GetAllAuthors();
-            return Ok(result);
+            var authors = await _authorService.GetAllAuthors();
+            return Ok(authors);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] AuthorDto authorDto)
+        public async Task<IActionResult> Create([FromBody] CreateAuthorRequest authorDto)
         {
-            var author = new Author
-            {
-                Name = authorDto.Name,
-                Phone = authorDto.Phone
-            };
-
-            var result = await _authorService.AddAuthor(author);
+            var result = await _authorService.CreateAuthor(authorDto);
             return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] AuthorDto authorDto)
+        public async Task<IActionResult> Update(int id, [FromBody] UpdateAuthorRequest authorDto)
         {
-            try
-            {
-                if (id != authorDto.Id)
-                {
-                    return BadRequest("ID in URL does not match ID in body");
-                }
-
-                var author = new Author
-                {
-                    Id = authorDto.Id,
-                    Name = authorDto.Name,
-                    Phone = authorDto.Phone
-                };
-
-                bool isUpdated = await _authorService.UpdateAuthor(author);
-
-                return isUpdated ? NoContent() : NotFound();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+            await _authorService.UpdateAuthor(authorDto);
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            bool deleted = await _authorService.DeleteAuthor(id);
-
-            return deleted
+            return await _authorService.DeleteAuthor(id)
                 ? NoContent()
                 : NotFound($"Author with id {id} not found");
         }

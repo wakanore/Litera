@@ -7,10 +7,10 @@ namespace Application
 {
     public interface IReaderService
     {
-        Task<ReaderDto> AddReader(ReaderDto reader);
-        Task<bool> UpdateReader(ReaderDto reader);
+        Task<ReaderResponse> CreateReader(CreateReaderRequest request);
+        Task<ReaderResponse> UpdateReader(UpdateReaderRequest request);
         Task<bool> DeleteReader(int id);
-        Task<ReaderDto> GetReaderById(int id);
-        Task<IEnumerable<ReaderDto>> GetAllReaders();
+        Task<ReaderResponse> GetReaderById(int id);
+        Task<IEnumerable<ReaderResponse>> GetAllReaders();
     }
 }

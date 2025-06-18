@@ -1,19 +1,27 @@
 ﻿using System.Data;
 using Npgsql;
 using Domain;
+using Microsoft.EntityFrameworkCore;
 
-public class AppDbContext : IDisposable
+public class AppDbContext : DbContext, IDisposable
 {
-    private readonly NpgsqlConnection _connection;
+    private NpgsqlConnection _connection;
 
-    public AppDbContext(string connectionString)
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
-        _connection = new NpgsqlConnection(connectionString);
-        _connection.Open();
+    }
+
+    public void OpenConnection()
+    {
+        _connection = Database.GetDbConnection() as NpgsqlConnection;
+        _connection?.Open();
     }
 
     public void ExecuteNonQuery(string sql, params NpgsqlParameter[] parameters)
     {
+        if (_connection == null)
+            OpenConnection();
+
         using var command = new NpgsqlCommand(sql, _connection);
         command.Parameters.AddRange(parameters);
         command.ExecuteNonQuery();
@@ -21,6 +29,9 @@ public class AppDbContext : IDisposable
 
     public IEnumerable<Author> ExecuteQuery(string sql, params NpgsqlParameter[] parameters)
     {
+        if (_connection == null)
+            OpenConnection();
+
         using var command = new NpgsqlCommand(sql, _connection);
         command.Parameters.AddRange(parameters);
 
@@ -34,22 +45,18 @@ public class AppDbContext : IDisposable
             };
         }
     }
-
-    public IEnumerable<Author> GetAuthors()
-    {
-        return ExecuteQuery("SELECT * FROM Authors");
-    }
+    public DbSet<Author> Authors { get; set; }
+    public IEnumerable<Author> GetAuthors() => Authors.ToList();
 
     public void AddAuthor(Author author)
     {
-        ExecuteNonQuery(
-            "INSERT INTO Authors (Name, ...) VALUES (@name, ...)",
-            new NpgsqlParameter("@name", author.Name)
-        );
+        Authors.Add(author);
+        SaveChanges();
     }
 
     public void Dispose()
     {
         _connection?.Dispose();
+        base.Dispose();
     }
 }
